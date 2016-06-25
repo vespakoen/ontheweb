@@ -23,7 +23,7 @@ https-portal:
 
 # KOENSCHMEETS
 koenschmeetswww:
-  build: koenschmeets
+  image: vespakoen/koenschmeets:latest
 koenschmeetsci:
   image: vespakoen/drone:0.5.1
   restart: always
