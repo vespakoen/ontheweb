@@ -1,0 +1,397 @@
+body: 
+
+Whenever I am not occupied with work, I open up my editor and hack on Schema Mapper.  
+It is a project that I have become fascinated by as it covers many aspects of programming.  
+  
+First let me tell you something about what Schema Mapper is (or tries to be)
+
+## Schema Mapper
+
+Imagine you are building an API for your product, and you want to store incoming data in multiple databases, for example in PostgreSQL and Elastic(search).  
+You now have to setup a PostgreSQL database, add the tables to it and setup an Elasticsearch index with the correct mappings.  
+Now you release a mobile app that uses the API and everybody is happy.  
+A month later, you add some new features to your app that require some changes to your schema so you make and run a script that migrates the tables and updates the Elasticsearch mapping.  
+You start up your app, and all you get is a white screen, when you look at the logs you notice that the app is trying to access a property that is not present in the data anymore.  
+Now you know that you cannot rename or remove columns without possibly breaking stuff, so your roll back the migration and create a new database, elasticsearch index and API endpoint (/api/v2).  
+Your v2 endpoint stores the data in the new version of the database, transforms the data a bit to make it the same as the v1 data, and store it there as well.  
+You modify the v1 API endpoint to make it transform the data and insert it into the v2 database after it is stored in the v1 database.  
+New and old clients work again and everybody is happy.  
+
+### A different approach
+
+Schema Mapper was designed to make the use case from above as simple as possible.  
+It uses a single format for describing a schema, and a single format for describing data.  
+All changes you make to a schema are stored and used for transforming data between versions.  
+Schema Mapper typically runs on a server, but can also run in the browser.  
+The only difference is that in the browser the data get's stored in leveldb (using level-js which stores data in IndexedDB).  
+
+### Server
+
+Let's start a schema mapper server and configure some database drivers.
+
+#### Installation
+
+```shell
+npm install -g schema-mapper-store
+```
+
+#### Usage
+
+```
+schema-mapper-store \
+  --port 9090 \
+  --driver [ elasticsearch --host http://localhost:9200 ] \
+  --driver [ postgresql --host localhost --username postgres --password somepassword ] \
+  --driver [ leveldb --path /leveldb ]
+```
+
+We now have a schema mapper store running on port 9090 with an Elasticsearch, Postgresql and LevelDB driver enabled.
+
+### Browser
+
+#### Installation
+
+```shell
+npm install -g schema-mapper-store babel-polyfill
+```
+
+#### Usage
+
+```js
+// import dependencies
+import 'babel-polyfill'
+import LocalStore from 'schema-mapper-store/local'
+import RemoteStore from 'schema-mapper-store/remote'
+
+// setup stores
+var remoteStore = RemoteStore.create('http://localhost:9090')
+var store = LocalStore.create()
+
+// sync local store with remote store
+store.sync(remoteStore)
+```
+
+We now have setup a store in the browser, and a connection to a remote store (running on localhost).
+We also tell the local store to sync with the remote store.
+
+Before we can start entering data, we have to create a project, which goes like this:
+
+```js
+// create a project
+store.request({
+  command: 'change.apply', // the change.apply command is used to make modifications to the schema
+  data: { // this is the actual change object
+    change: 'project.put', // this is the change we want to apply (create or update a project)
+    projectId: '1', // this is the unique identifier for the project
+    project: { // this is the project object
+      name: 'helloworld', // this is the name for the project, which will be used for the "database" name
+      version: 0, // the version of the project, 0 means "staging"
+      drivers: ['elasticsearch'], // this tells the store which drivers to use when items are stored in the project
+      schemas: { // this object describes the schemas for this project, the key is the unique id for the schema
+        '1': {
+          name: 'users', // this is the name for the schema, which will be used for the database "table" name
+          primary: '1', // this tells the store which column is the primary key, it refers to the unique column id
+          columns: { // these are the columns for the schema, the key is the unique id for the column
+            '1': {
+              name: 'id', // this is the name for the column
+              type: 'uuid' // this is the column type
+            }
+          }
+        }
+      }
+    }
+  }
+})
+```
+
+Here is what happened:
+- The store handles the command by "staging" the project.put change, staging means the change is stored at version 0 (zero).
+- The store creates an event saying that the change was successfully applied, and containing the original command that caused it to happen
+- The store logs this event
+- The store emits this event
+- The replicator receives the successful event coming from the local store, takes the command that caused the event, and sends it to the remote store
+- The remote store handles the command, creates the event, logs and emits it
+- The replicator receives the successful event coming from the remote store, sees that the local store already handled the command and ignores it
+
+Once we are happy with the design of the project, we can tag it (increase the version).
+When done, the database(s) will be created, and the store is ready to accept data.
+Here is how you tag a project:
+
+```js
+// tag the project
+store.request({
+  command: 'change.apply', // again we are going to make a modification to the schema, so we use the change.apply command
+  data: { // the change object
+    change: 'project.tag', // change we want to apply (tag the project)
+    projectId: '1', // the project id to tag
+    version: 1 // the version to tag it to
+  }
+})
+```
+
+Here is what happened:
+- The store stages the change, this means that it updates the project version to version 1, but stores the project under version 0 (zero)..
+- The store calls the "migrate" method on all configured drivers, this will cause the driver to create a new database named "hello@2" (since this is the store in a browser, it automatically becomes IndexedDB).  
+- The store creates an event saying that the change was successfully applied
+- The store applies the change, the project stored under version 0 (staging) is copied to version 1
+- The store logs the event
+- The replicator receives the successful event, takes the command that caused the event, and sends it to the remote store
+- The remote store handles the command, creates the event, logs and emits it
+- The replicator receives the successful event coming from the remote store, sees that the local store already handled the command and ignores it
+
+Now that the project is at version 1 and the databases are present, we can insert some data.
+
+```js
+// create an item
+store.request({
+  command: 'item.create',
+  data: {
+    projectId: '1',
+    projectVersion: 1,
+    schemaId: '1',
+    item: {
+      id: '277f2c8e-2093-4f67-ab50-e3f295d40249'
+    }
+  }
+})
+```
+
+Here is what happened:
+- The store looks up the schema with id 1 from the project with id 1, at version 1.
+- The store calls the "createItem" method on all configured drivers with the item and schema information (since this is the store in a browser, the driver is forced to leveldb).  
+- The store creates an event saying that the item was successfully created
+- The store logs the event
+- The replicator receives the successful event, takes the command that caused the event, and sends it to the remote store
+- The remote store handles the command, creates the event, logs and emits it
+- The replicator receives the successful event coming from the remote store, sees that the local store already handled the command and ignores it
+
+This is still basic stuff, but it get's more interesting when we make some changes to our schema and tag the project again.
+To change the schema, we simply apply a 'project.put' change again.
+
+```js
+// update a project
+store.request({
+  command: 'change.apply',
+  data: {
+    change: 'project.put',
+    projectId: '1',
+    project: {
+      name: 'hello', // this was helloworld before
+      version: 1, // note that it is now at version 1
+      drivers: ['elasticsearch'],
+      schemas: {
+        '1': {
+          name: 'members', // this was users before
+          primary: '1',
+          columns: {
+            '1': {
+              name: 'member_id', // this was id before
+              type: 'uuid'
+            },
+            '2': { // this is a new column
+              name: 'email',
+              type: 'string'
+            }
+          }
+        }
+      }
+    }
+  }
+})
+```
+
+Here is what happened:
+- The store handles the command by "staging" the project.put change, staging means the change is stored at version 0 (zero).
+- The store creates an event saying that the change was successfully applied, and containing the original command that caused it to happen
+- The store logs this event
+- The store emits this event
+- The replicator receives the successful event coming from the local store, takes the command that caused the event, and sends it to the remote store
+- The remote store handles the command, creates the event, logs and emits it
+- The replicator receives the successful event coming from the remote store, sees that the local store already handled the command and ignores it
+
+Still not so exciting, but when we tag the project to version 2, magic starts happening
+
+```js
+// tag the project
+store.request({
+  command: 'change.apply',
+  data: {
+    change: 'project.tag',
+    projectId: '1',
+    version: 2 // the new version
+  }
+})
+```
+
+Here is what happened:
+- The store stages the change, this means that it updates the project version to version 2, but stores the project under version 0 (zero)..
+- The store compares version 1 and 2 of the project, and get's a list of changes, which looks like this
+```js
+  [
+    {
+      change: 'project.rename',
+      projectId: '1',
+      name: 'hello',
+      oldName: 'helloworld'
+    },
+    {
+      change: 'schema.rename',
+      projectId: '1',
+      schemaId: '1',
+      name: 'members',
+      oldName: 'users'
+    },
+    {
+      change: 'column.rename',
+      projectId: '1',
+      schemaId: '1',
+      columnId: '1',
+      name: 'member_id',
+      oldName: 'id'
+    },
+    {
+      change: 'column.create',
+      projectId: '1',
+      schemaId: '1',
+      columnId: '2',
+      column: {
+        name: 'email',
+        type: 'string'
+      }
+    }
+  ]
+```
+- The store calls the "migrate" method on all configured drivers, this will cause the driver to create a new database named "hello@2" (since this is the store in a browser, the driver is forced to leveldb).
+- The store calls the "sync" method on all configured drivers, this will cause the driver to stream the data from the version 1 database to the version 2 database,
+**transforming the changes on their way by applying the changes from above.**
+- The store creates an event saying that the change was successfully applied
+- The store applies the change, the project stored under version 0 (staging) is copied to version 2
+- The store logs the event
+- The replicator receives the successful event, takes the command that caused the event, and sends it to the remote store
+- The remote store handles the command, creates the event, logs and emits it
+- The replicator receives the successful event coming from the remote store, sees that the local store already handled the command and ignores it
+
+We now have 2 databases, helloworld@1 and hello@2, both containing the same amount of items (=rows/documents), but with a different schema.
+So what happens when we store an item again? Lets try
+
+```js
+// create an item
+store.request({
+  command: 'item.create',
+  data: {
+    projectId: '1',
+    projectVersion: 2,
+    schemaId: '1',
+    item: {
+      member_id: '9159b338-260f-4508-9a2b-545f7a506c1e',
+      email: 'hello@koenschmeets.nl'
+    }
+  }
+})
+```
+
+Here is what happened:
+- The store looks up the schema with id 1 from the project with id 1 at version 2.
+- The store looks up the schema with id 1 from the project with id 1 at version 1.
+- The store compares version 1 and 2 of the schema, and get's a list of changes, which are identical the the changes above
+- The store calls the "createItem" method on all configured drivers with the item and schema information from version 2 (since this is the store in a browser, the driver is forced to leveldb).  
+- The store **inverts the changes**, turning the changes into something like this:
+```js
+  [
+    {
+      change: 'project.rename',
+      projectId: '1',
+      name: 'helloworld',
+      oldName: 'hello'
+    },
+    {
+      change: 'schema.rename',
+      projectId: '1',
+      schemaId: '1',
+      name: 'users',
+      oldName: 'members'
+    },
+    {
+      change: 'column.rename',
+      projectId: '1',
+      schemaId: '1',
+      columnId: '1',
+      name: 'id',
+      oldName: 'member_id'
+    },
+    {
+      change: 'column.remove',
+      projectId: '1',
+      schemaId: '1',
+      columnId: '2',
+      oldColumn: {
+        name: 'email',
+        type: 'string'
+      }
+    }
+  ]
+```
+- The store transforms the item by applying the inverted changes, turning the v2 item into a v1 compatible one.
+```js
+  var v2 = {
+    member_id: '9159b338-260f-4508-9a2b-545f7a506c1e',
+    email: 'hello@koenschmeets.nl'
+  }
+  var v1 = transformer.transform(v2, invertedChanges);
+  console.log(v1);
+  {
+    id: '9159b338-260f-4508-9a2b-545f7a506c1e'
+  }
+
+  // when somebody would store a v1 item, it would get transformed into a v2 item like this:
+
+  var v1 = {
+    id: '22fa509d-5623-491f-961e-ab1bccdca403'
+  }
+  var v2 = transformer.transform(v1, changes);
+  console.log(v2);
+  {
+    member_id: '9159b338-260f-4508-9a2b-545f7a506c1e',
+    email: null
+  }
+```
+- The store calls the "createItem" method on all configured drivers with the transformed item and schema information from version 1 (since this is the store in a browser, the driver is forced to leveldb).  
+- The store creates an event saying that the item was successfully created
+- The store logs the event
+- The replicator receives the successful event, takes the command that caused the event, and sends it to the remote store
+- The remote store handles the command, creates the event, logs and emits it
+- The replicator receives the successful event coming from the remote store, sees that the local store already handled the command and ignores it
+
+Pretty neat huh?
+
+Before you start using this, note the dragons:
+
+## Limitations
+
+<div style="padding: 20px; background: #B90000; font-weight: 400; font-size: 1.2rem; color: #fff; display: block">
+  NOTE: Schema Mapper is still in development and not ready for production use!!<br>
+  <br>
+  It has some benefits but only gets these by adding a lot of limitations.<br>
+  <ul>
+    <li>The only way to write to your databases (while staying consistent) is through Schema Mapper.</li>
+    <li>Transactions are not supported</li>
+    <li>Some types cannot be mapped uniformly, and you are stuck with what Schema Mapper thinks is best (per driver options will partially solve this)</li>
+    <li>Some specific database functionality will be unusable (unless you know what you are doing), think:
+      <ul>
+        <li>Cascades</li>
+        <li>Triggers</li>
+      </ul>
+    </li>
+    <li>Schemaless DB's still need a schema to work (for transforming data between versions)</li>
+  </ul>
+</div>
+
+Did I mention Schema Mapper is Free and Open-Source Software?
+I welcome contributors!
+
+<a href="https://github.com/schema-mapper" target="_blank">Schema Mapper Github</a>
+
+---
+subtitle: Versioned data in any database
+---
+title: Schema Mapper

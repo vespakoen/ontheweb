@@ -1,0 +1,92 @@
+_model: page
+---
+title: About me
+---
+body:
+
+
+Hi!
+
+I am Koen Schmeets. I live in Berlin, DE with some good friends, a backpack full of clothes, some old vinyl records and my Vespa.  
+My life basically fits on the back of my Vespa and I have grown very fond of that.  
+  
+In my free time you can find me playing my guitar, dancing at a techno parties, asking questions at programming meet-ups or out and about with my Vespa.
+
+## How it all started
+As a 12 year old boy I was obsessed with a game called America's Army, I played it day and night to the dismay of my father, who decided to wipe away my windows installation and replace it with linux as a punishment.  
+
+Lucky for me, America's Army also ran on Linux, phew..!  
+
+After a good friend gave me the magic commands to get the <span class="hint--bottom" data-hint="Video card manufacturer">NVIDIA</span> driver working I started working on a website for my clan.  
+
+Another clan website from which I knew the owner had a <span class="hint--bottom" data-hint="Chat application">shoutbox</span> on their page and I asked him how he made it.  
+
+He replied with an attachment only; shoutbox.php. It contained code that would print the contents of a file, display a form, and append to the file when post data was given.  
+
+I had already learned some basic HTML and CSS by making a <span class="hint--bottom" data-hint="This is what the dutch used before facebook.&#xa;You had to make your own profile with HTML and CSS.&#xa;(now a dating website)">CU2 profile</span>, but had never seen PHP before, it was a new world for me, one that opened a lot of possibilities.  
+
+The file has been carefully inspected and modified, character by character, trying to have it NOT break in between saves, and has eventually been used to power all the dynamic features on the website.
+
+## What I do now
+
+After working at a couple of startups, I have decided to start freelancing again.  
+(The days of appending to files are not over, I am still doing it!)  
+
+You probably have a project and are looking for someone with the right skills.  
+Since I have some experience with SEO (and recruiters), I hereby present to you my <strong>(ever growing) list of languages and tools that I use (i.e. keywords)</strong>.
+
+### The languages I can work with
+
+  - JavaScript (ES5 / ES6 / ES7)
+  - node.js
+  - SQL
+  - PHP
+  - Bash
+  - HTML
+  - CSS
+  - Ruby
+  - Python
+  - Objective-C
+  - Java
+  - PL/PGSQL
+
+### Mobile development tools I have worked with
+
+- React Native
+- RubyMotion (IOS / Android development using the ruby language)
+- Cordova (was Phonegap)
+- Titanium
+
+### Databases I know my way around
+
+  - PostgreSQL
+  - MySQL
+  - SQLite
+  - LevelDB
+  - Redis
+  - MongoDB
+  - CouchDB
+  - Elasticsearch
+
+### Graphical user interfaces that I like to use
+
+  - Sublime text 3
+  - Adobe Photoshop
+  - Adobe Illustrator
+  - AutoCAD
+  - Inkskape
+  - GIMP
+  - Android Studio
+  - Mapbox Studio
+  - Tilemill
+  - Gitg
+  - PgAdmin 3
+  - Google Chrome / Firefox / Internet explorer
+
+### Command line tools that I use
+
+Where to begin?
+---
+_slug: about
+---
+subtitle: That's me and Roj in Sardinia

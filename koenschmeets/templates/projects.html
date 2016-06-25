@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% from "macros/project.html" import render_project %}
+{% from "macros/pagination.html" import render_pagination %}
+{% block title %}{{ this.title }}{% endblock %}
+{% block subtitle %}{{ this.subtitle }}{% endblock %}
+{% block body %}
+  {{ this.body }}
+  {% for child in this.pagination.items %}
+    {{ render_project(child, from_index=true) }}
+  {% endfor %}
+  {{ render_pagination(this.pagination) }}
+{% endblock %}

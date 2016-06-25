@@ -1,0 +1,213 @@
+title: Installing ubuntu on a Macbook Pro 17' mid 2010
+---
+author: Koen Schmeets
+---
+body:
+I am the proud owner of a Macbook Pro 17' from mid 2010 but installing Linux on an Apple can be a daunting task.  
+After lending my laptop out for a year or so, I just got it back yesterday and had to go through the painful experience of installing Linux on it again.  
+In this post I am going to share my experiences, and the ultimate guide to installing Linux on your MacBookPro6,1 yourself.  
+
+Actually, installing linux on it works just fine, but you end up with the open source video drivers that are a bit clunky and tend to crash your system now and then.  
+If you are like me and want to squeeze every last bit out of your PC, you choose to install the proprietary NVIDIA driver for the GT 330M card, but upon restart you find yourself facing a black screen.  
+What you see is X crashing, crashing hard that is. There is no way to get to another TTY, all you can do it start up in recovery mode to remove NVIDIA or fix the problem.
+
+Upon searching the internet, you will find other people with the same problem, some saying that the EFI version this laptop has is non standard, others saying that the NVIDIA driver simply doesn't support EFI.  
+Whatever the case, the only solution that works is to use a hybrid MBR (and syslinux!)
+
+This strategy has worked wonderfully for me for many years, but since Ubuntu 15.10, it got a little harder.
+
+After having made the Hybrid MBR and installing and configuring syslinux I got greeted with the message "boot error" so I went on the internet and found that other people were having the same problem, saying that syslinux (v6.03) that comes from the official repositories is broken.  
+The solution? grab the extlinux and syslinux-common .deb packages from the debian repositories.  
+Luckily I still had GRUB around, and could start in recovery mode to make the repairs.  
+After removing the official packages and installing the debian packages my system started up and NVIDIA was working, Yay!
+
+Since I have been spelunking in my system for a whole night (not the first time) and handcrafting the syslinux.cfg myself I thought i'd share my experiences with the world, and hopefully make another MacBookPro6,1 owner happy.
+
+## The complete guide to installing ubuntu on a MacBookPro6,1 and getting NVIDIA to play nice.
+
+As with any journey, preparation is key.
+For this trip, there are a couple of things you need.
+
+### Requirements
+
+- A backup of all your important files
+- A USB stick containing the ubuntu installer
+- A MacBookPro6,1!! (things work different in other models)
+- An internet connection
+- The <strong>extlinux</strong> and <strong>syslinux-common</strong> packages from the debian repository.
+- Means of downloading files, sticking them on a USB stick in case of emergency.
+- Knowing how to mount the USB stick from the shell
+- Alternative for the last 2 point:
+  - Knowing how to enable WIFI from the shell
+  - Knowing how to use "links", a shell based web browser (and having it available on your system before starting!)
+
+Hopefully, you have enough luggage to start the journey with confidence if you print out this blog post.
+
+### Obtaining the requirements
+
+Guides on how to backup your files, or create a ubuntu installer are all over the internet and I feel confident that you will be able to figure that out by yourself.
+
+The extlinux and syslinux-common packages can be downloaded from the following links:
+<a target="_blank" href="http://http.us.debian.org/debian/pool/main/s/syslinux/extlinux_6.03+dfsg-11_amd64.deb">http://http.us.debian.org/debian/pool/main/s/syslinux/extlinux_6.03+dfsg-11_amd64.deb</a>  
+<a target="_blank" href="http://http.us.debian.org/debian/pool/main/s/syslinux/syslinux-common_6.03+dfsg-11_all.deb">http://http.us.debian.org/debian/pool/main/s/syslinux/syslinux-common_6.03+dfsg-11_all.deb</a>
+
+### Reinstalling OSX
+
+If you want ot dual boot your laptop, install OSX first.
+There are a couple of ways to do this.
+
+1) You can stick the original DVD in your laptop and then click the upgrade button and restart a 100 times (not a great idea, but hey, whatever floats your boat!).
+
+2) You get a installer DVD from the version you want to install.
+
+3) You shutdown your laptop, press down the "cmd" and "r" keys simultaniously, start the laptop, and keep holding the keys until you get into recovery mode, Apple will download the latest OSX version (El Capitain at this time of writing).
+
+When you are in the installer, open the Disk Utily and wipe your your entire disk (you made a backup, right!?)
+
+Create a new partition for your OSX installation which you can make as big as you like, I usually let it take up the whole disk and resize it later before installing ubuntu, but you can already prepare an empty partition for Linux (or even add in an additional one for Windows) there as well.
+
+When the partitioning has finished, start the installer and follow the instructions.
+
+You should now have OSX running on your system again!
+Time to grab the refind zip archive, which is a great bootloader specifically designed for people that want to take back control over their mac.
+
+The zip archive can be downloaded from this page: <a target="_blank" href="http://www.rodsbooks.com/refind/getting.html">http://www.rodsbooks.com/refind/getting.html</a>  
+Download the zip under the "A binary zip file" link on that page.  
+Once you have obtained the zip, make sure to extract it (by simply opening it).  
+
+El Capitain has a new trick up it's sleeve (possible Yosemite as well) which will disallow you to run the installer from OSX.
+
+What you need to do is start up in recovery mode (by holding the cmd+r keys on startup), open the terminal there, navigate to the extracted folder and run the installer, which goes something like this:
+
+```bash
+cd /Volumes/OSX/Users/koen/Downloads/refind
+chmod +x refind-install
+./refind-install
+# it complains about the secured ESP stuff, you can continue anyways by answering with "Y"
+```
+
+At this point, it should say refind is successfully installed (read a bit further before rebooting), and you can reboot.
+To continue faster, insert the ubuntu installer USB / CD / DVD before you reboot.
+
+
+### Installing ubuntu
+
+Now you should be presented with the refind bootloader, OSX should be there, and there should also be some options to start the linux installer.
+The one you wil want to select is the one that ends with "grub64.efi".
+Now select "Try ubuntu"
+
+Once the installer has started, you open the terminal and run
+```bash
+sudo gparted
+```
+
+You can now resize the disk, and make room from Linux (if you hadn't already).
+
+Start the installer, select the partition you created to be the root partition: /
+
+You could choose to use a seperate partition for your home folder, or add a swap partition, but for the sake of simplicity, I will not go deeper into that.
+
+Choose the first disk as the partition where the bootloader should be installed and start the installation.
+
+It could complain that no swap partition has been made, say you don't mind and continue.
+
+After installation, the system will reboot directly into ubuntu, you can switch to OSX by holding the "alt" key on startup, but what we really want is to get refind back. We can accomplish that in a couple of ways
+
+1) The easy way, start in recorvery mode again and re-run the refind installer
+
+2) The I know what I am doing way: use "efibootmgr" in linux to select refind as the first thing to boot (more on this on the internet or in the manual page)
+
+Now we have OSX and Linux installed, and can choose what to boot through refind, bravo!
+
+### Getting NVIDIA to cope
+
+This is the scary part, but don't fear, awesome graphics, secondary display without hassel and great speed is near!
+
+While in linux, download the extlinux and syslinux-common packages from the links given above, you might also want to install "links" and "wifi-menu" or "nm-cli".
+
+#### Making the Hybrid MBR
+
+Now we are going to setup the Hybrid MBR, for this we need gdisk, which is shipped with ubuntu by default.
+
+```bash
+gdisk /dev/sdX
+```
+Replace the X with the letter of the drive that contains the installations.
+
+Sidenode: Use "ctrl+c" to cancel at any time, or "?" to show the help for the menu we're in
+
+Let's get started
+
+- Hit "p" to print the partitions
+- Write down the numbers at the very front for the Linux, OSX (and windows partition if you have it)
+- Hit "x" to navigate to the extra functionality menu (experts only, yay!)
+- Hit "r" to navigate to the recovery and transformation options (experts only again, whooohooo)
+- Hit "h" to make a Hybrid MBR
+
+Put in the partition numbers of Linux, OSX (and windows), seperated with a space, it will look something like "1 2"
+
+- Answer "Place EFI GPT (0xEE) partition first in MBR (good for GRUB)? (Y/N):" with "Y"
+- When asked for the MBR hex code, use the default by hitting enter
+- When asked to set the bootable flag, choose "Y"
+- When asked to use one of the unused parition space(s) to protect more partitions, choose "Y"
+- When back in the menu, hit "w"
+- Dont' get scared about the caution, proceed by hitting "Y"
+
+Hybrid MBR is in place! we can now install exlinux
+
+#### Installing EXTLINUX
+
+```bash
+cd /path/to/foldercontainingdebs
+sudo dpkg -i exlinux*.deb syslinux-common*.deb
+extlinux --install /boot/extlinux
+```
+
+Flash the mbr.bin to the first 440 bytes of the disk (no panic, this works!)
+```bash
+# replace X with the letter of your disk with the installations (usually "/dev/sda")
+dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=/dev/sdX
+```
+
+#### Handcrafing the config
+
+Since extlinux doesn't provide us with a config, we have to make it ourselves.
+Navigate to the /boot/extlinux folder, create a "syslinux.cfg" file, and put the following inside
+```txt
+DEFAULT linux
+LABEL linux
+  LINUX ../vmlinuz-4.2.0-16-generic
+  APPEND initrd=../initrd.img-4.2.0-16-generic
+  APPEND root=/dev/sda1
+```
+
+The values in there should be modified to your configuration, kernels get updated frequently, you should update this file as well (to enjoy the latest kernel features)
+
+Note: APPEND root=/dev/sda1 is the sleazy way to tell syslinux on what disk to find the kernel, you can also use the UUID of the disk (which will not change, wheras the disk number could change when swapping disks around fysically)
+
+#### Install NVIDIA
+
+We can install the NVIDIA driver via "Additional Drivers" (software-properties-gtk), a GUI application.
+
+I choose the NVIDIA legacy binary driver - version 304.131 from nvidia-304 (proprietary). (Others might work as well but I havn't tried that out yet)
+
+Run "sudo nvidia-xconfig" to generate a xorg.conf file (placed in /etc/X11)
+
+#### Reboot and enjoy!
+
+When you reboot now, a coloured penguin should be present in the refind menu, if it is grey and fails to boot, the "APPEND root" entry probably refers to the wrong disk.
+If everything went fine, linux should boot (in a low resolution) and then proceed to show you the login screen in full resolution and high speed!
+In which case, I salute you!
+
+You may now proceed to install "macfanctld" to make sure your computer doesn't overheat, and optionally remove GRUB from your system (apt-get autoremove grub*).
+
+## What's next?
+
+This situation described in the following askubuntu question seems to be very similar to what I am experiencing, the next time I re-install my Macbook I will give this a shot
+
+http://askubuntu.com/questions/264247/proprietary-nvidia-drivers-with-efi-on-mac-to-prevent-overheating/613573#613573
+
+---
+pub_date: 2016-02-08
+---
+subtitle: And getting the NVIDIA drivers to play nice

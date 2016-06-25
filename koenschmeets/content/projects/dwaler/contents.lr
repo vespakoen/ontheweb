@@ -1,0 +1,77 @@
+body:
+
+Dwaler is an navigation system for on your ((motor)cycle) and runs on a Arduino >= Nano.  
+It is not going to tell you to turn left or right at every corner but instead shows you a compass with an extra needle that indicates the direction to your destination.  
+
+I have been using compass navigation when traveling from Maastricht (NL) to Berlin (DE) on my Vespa, besides the compass needle spinning like crazy at certain engine speeds it worked beautifully.  
+For the next trip I got myself a GPS module and planned on logging the trip and making a digital compass that wouldn't be effected by a shaking Vespa.  
+
+Unfortunately I wasn't able to complete that in time for my trip, but lately I had some free time on my hands and got to improve the functionality a lot.
+
+## Features
+
+- **Select destination**
+  This allows you to choose between destinations that are uploaded to the dwaler via USB (bluetooth in the future).
+
+<img src="tripselector.png" />
+
+- **Compass**
+  This one is obvious, it shows you where you should be heading, and where you are currently heading to.
+
+<img src="compass-in-range.png" />
+<img src="compass-out-of-range.png" />
+
+- **Progress**
+  This shows you how far away the destination is from your starting point and how far the destination is from your current position.
+  On top of that, it shows a little progress bar for a quick overview.
+
+<img src="progress.png" />
+
+- **Speed**
+  This shows you the current and average speed.
+
+<img src="speed.png" />
+
+- **Statistics**
+  This shows you the top speed and the distance travelled so far.
+
+<img src="stats.png" />
+
+- **Location**
+  Simply shows your latitude and longitude
+
+<img src="position.png" />
+
+- **GPS**
+  Shows if there is a fix, the fix quality and the amount of satellites within view.
+
+<img src="gps.png" />
+
+- **Logging**
+  Logs your latitude, longitude and altitude to an SD
+
+## What's next?
+
+A couple of things are on my mind for this project
+
+- Make a desktop / mobile app that can communicate with the dwaler to manage trip destinations, and collect / share the information.
+- Design a schematic, PCB and enclosure
+- Add support for different screens (I have a Nokia 5510 display laying around)
+- Get an Arduino with more storage space so I can add more features!
+
+## Parts list
+
+- [Arduino Nano](https://www.arduino.cc/en/Main/ArduinoBoardNano)
+- [Adafruit ultimate GPS](https://learn.adafruit.com/adafruit-ultimate-gps)
+- [Hitachi HD44780 LCD](https://en.wikipedia.org/wiki/Hitachi_HD44780_LCD_controller)
+- Catalex MicroSD Adapter V1.1 (you will need google translate to acquire one of those)
+- A button, some wires and a soldering iron
+
+## DIY
+
+For the curious, I open sourced [the code](https://www.github.com/vespakoen/dwaler)!  
+
+---
+subtitle: Wander round without being commanded
+---
+title: Dwaler

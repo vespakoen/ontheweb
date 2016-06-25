@@ -1,0 +1,17 @@
+{% macro render_blog_post(post, from_index=false) %}
+  {% if from_index %}
+  <a href="{{ post|url }}" class="block" style="{% if post.attachments.images %} background-image: url({{ post.attachments.images.first().thumbnail(600)|url }});{% endif %}">
+    <div class="text-wrap">
+      <h2 class="title">{{ post.title }}</h2>
+    </div>
+  </a>
+  {% else %}
+  <div class="blog-post">
+    <small class="date" style="float: right">
+      written on {{ post.pub_date }}
+    </small>
+    <h2>{{ post.title }}</h2>
+    {{ post.body }}
+  </div>
+  {% endif %}
+{% endmacro %}

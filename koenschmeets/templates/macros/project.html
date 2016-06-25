@@ -1,0 +1,14 @@
+{% macro render_project(project, from_index=false) %}
+  {% if from_index %}
+  <a href="{{ project|url }}" class="block" style="{% if project.attachments.images %} background-image: url({{ project.attachments.images.first().thumbnail(600)|url }});{% endif %}">
+    <div class="text-wrap">
+      <h2 class="title">{{ project.title }}</h2>
+    </div>
+  </a>
+  {% else %}
+  <div class="project">
+    <h2>{{ project.title }}</h2>
+    {{ project.body }}
+  </div>
+  {% endif %}
+{% endmacro %}

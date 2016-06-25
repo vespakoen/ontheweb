@@ -1,0 +1,82 @@
+title: Start using virtual desktops
+---
+author: Koen Schmeets
+---
+body:
+Is it sometimes hard to find that window you just minimized?
+Do the apps on your screen look like the mail on your doormat in the morning?
+Do you find yourself endlessly tabbing through windows, or even find yourself moving a bunch of windows out of the way to find the one you are looking for?  
+
+Here's something that might be new to you; <strong>You can organize your applications over multiple workspaces</strong>
+
+## Workspaces
+
+Workspaces (or virtual desktops) are a way of uncluttering your desktop.
+Instead of piling everything on one screen, you add some virtual screens and spread your applications out over them (grouped by function, project, or whatever you see fit)  
+Combined with keyboard shortcuts, you now have superpowers!  
+It is like having 10 screens on your table with the added benefit of not having to turn your neck and honestly, this feature alone boosts my productivity enormously.
+
+### An example
+
+Let me illustrate an example, you are working at a helpdesk and have the following virtual desktops:
+
+- Screen 1 has the CRM application for managing information about your client
+- Screen 2 has a browser for looking up information
+- Screen 3 has an email program to communicate with your team
+- Screen 4 has Spotify to play some music in between calls
+- Screen 5 Has a browser with facebook for illegal activities
+
+When you start your day, you open the applications on (virtual) screen 1 to 5.  
+(To switch between screens, we use alt+[screennumber])  
+
+- The phone rings, you pick it up (alt+1)
+- You enter the customer's number, fill out a form, the customer asks about a discount found on your website (alt+2)
+- You explain all the benefits, the customer buys (alt+1) you fill in the details and hang up the phone (alt+4).
+- You sing along with the song (alt+5)
+- You see the boss walking in (alt+3)
+
+See how easy that was? After a while your brain get's used to the numbers, you don't even think about it anymore, it has become second nature like shifting gears in your car.
+
+### A (shortened) history
+
+- [1985] The Amiga 1000 introduces virtual desktops to the world
+- [1990] 5 years after introduction Linux got it as well through a window manager called vtwm (fun fact, it still exists today!)  
+- [2006] 21 years after introduction Mac OS X followed by adding "spaces" to Mac OS X 10.5 (Leopard)  
+- [2015] 30 years after introduction Windows finally got workspaces natively, in all fairnes though, it could be installed with external programs before Mac OS X even introduced spaces.  
+
+## The current state of affairs
+
+### OSX
+Spaces in OSX are pretty good, the only annoyance I have with it is the animation you get while switching between spaces, according to <a href="http://apple.stackexchange.com/questions/17929/how-can-i-disable-animation-when-switching-desktops-in-lion">this</a> post, you can use <a href="http://totalspaces.binaryage.com/">TotalSpaces</a> to disable them.
+More information on how to setup keybindings for switching to a particular space can be found <a href="http://www.howtogeek.com/210803/how-to-use-os-x-virtual-desktops-more-effectively-with-keyboard-shortcuts/">here</a>.
+
+### Windows
+Windows only got virtual desktops very recently, and the functionality is very limited.  
+It seems that switching between virtual desktops with a keybinding is not supported natively and there is no way to move applications to other workspaces.  
+Fortunately a lot of developers have tackled these problems and tools exists to make this work the way it should work.  
+I found <a href="http://www.ghacks.net/2014/08/09/the-best-virtual-desktop-managers-for-windows/">this</a> post that compares a couple of tools that are out there.
+
+### Linux
+Linux has had workspaces for a long time and is suppported out of the box in most distributions.
+
+## Snapping
+As we have seen, workspaces are a great way to unclutter your desktop and find stuff, but when you want to have some applications side by side, you have to land your cursor exactly on the corner of the application (2 times) to move your window into the right position.  
+To save yourself from some pain, you move the window first my grabbing it at the (bigger) top area of the application, so you have to land the cursor only once.  
+This resizing hell can easily be overcome by using "snapping".
+
+### OSX
+On OSX, you have to download an application to make this work, the one I would recommend is <a href="http://blog.boastr.net/?page_id=1722">BetterTouchTool</a>.
+
+### Linux
+Some distributions provide snapping out of the box, but if it doesn't, setting up snapping seems pretty complicated.
+However, there are a lot of <a href="https://wiki.archlinux.org/index.php/Comparison_of_tiling_window_managers">tiling window managers</a> available for linux that provide a superior experience.
+
+### Windows
+Windows has had snapping available since Windows 7, and they have made it a lot better in windows 10, <a href="http://www.howtogeek.com/198230/how-to-use-snap-assist-and-2x2-snap-on-windows-10/">go check it out</a>.
+There is also a tiling window manager for windows that I enjoyed using called <a href="https://github.com/fuhsjr00/bug.n">bug.n</a>.
+
+
+---
+pub_date: 2016-02-08
+---
+subtitle: And take back control

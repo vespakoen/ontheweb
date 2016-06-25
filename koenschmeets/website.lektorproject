@@ -1,0 +1,7 @@
+[project]
+name = Koen Schmeets
+url = http://www.koenschmeets.nl
+url_style = absolute
+
+[attachments]
+model = attachment

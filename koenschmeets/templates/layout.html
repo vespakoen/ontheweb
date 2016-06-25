@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <meta charset="utf-8">
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ '/static/style.css'|url }}">
+  <link rel="stylesheet" href="{{ '/static/hint.css'|url }}">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,300,500' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow.min.css">
+  <title>{% block title %}Welcome{% endblock %} — Koen Schmeets</title>
+  <body>
+    <nav id="menu">
+      <ul class="nav">
+        <li{% if this._path == '/' %} class="active"{% endif %}><a href="{{ '/'|url }}">Welcome</a></li>
+        {% set root = site.get('/') %}
+        {% for child in root.children recursive %}
+          <li{% if this._path == child._path %} class="active"{% endif %}><a href="{{ child|url }}">{{ child.title }}</a>
+        {% endfor %}
+      </ul>
+    </nav>
+    <header id="header">
+      <a class="brand" href="/" title="Welcome"></a>
+      <a id="menu-button" class="menu-button"><span class="entypo-menu"></span></a>
+      <ul class="nav">
+        <li{% if this._path == '/' %} class="active"{% endif %}><a href="{{ '/'|url }}">Welcome</a></li>
+        {% set root = site.get('/') %}
+        {% for child in root.children recursive %}
+          <li{% if this._path == child._path %} class="active"{% endif %}><a href="{{ child|url }}">{{ child.title }}</a>
+        {% endfor %}
+      </ul>
+    </header>
+
+    <div id="intro"{% if this.attachments.images %} style="background-image: url({{ this.attachments.images.first().thumbnail(1600) }}); background-position: {% if this.attachments.images.first().background_position %}{{ this.attachments.images.first().background_position }}{% else %}50% 50%{% endif %}"{% endif %}>
+      <div class="inset">
+        <h1>{{ this.title }}<br><small>{% block subtitle %}{% endblock %}</small></h1>
+      </div>
+    </div>
+
+    <div id="content">
+      <div class="inset">
+        {% block body %}{% endblock %}
+      </div>
+    </div>
+    <footer>
+      <div class="inset">
+        <div class="outro">
+          <h2>KOEN SCHMEETS</h2>
+          I am a freelance software writer and this is my Personal Website.<br>
+          Did I pique your interest? Feel free to <a href="mailto:hello@koenschmeets.nl">send me an email!</a>
+        </div>
+        <ul class="nav">
+          <li{% if this._path == '/' %} class="active"{% endif %}><a href="{{ '/'|url }}">Welcome</a></li>
+          {% set root = site.get('/') %}
+          {% for child in root.children recursive %}
+            <li{% if this._path == child._path %} class="active"{% endif %}><a href="{{ child|url }}">{{ child.title }}</a>
+          {% endfor %}
+          <li class="right"><a href="https://www.facebook.com/ksfreelancer" title="Facebook" target="_blank"><span class="entypo-facebook"></span></a></li>
+          <li class="right"><a href="https://www.github.com/vespakoen" title="Github" target="_blank"><span class="entypo-github"></span></a></li>
+          <li class="right"><a href="https://www.linkedin.com/in/koen-schmeets-82393612" title="Linkedin" target="_blank"><span class="entypo-linkedin"></span></a></li>
+        </ul>
+        <span class="copy">&copy; Copyright 2016 by Koen Schmeets.</span>
+      </div>
+    </footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+    <script src="/static/main.js"></script>
+  </body>
+</html>
