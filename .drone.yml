@@ -3,6 +3,7 @@ pipeline:
     image: debian:jessie
     commands:
       - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-      - apt-get update && apt-get install -y libssl-dev python-dev curl imagemagick
+      - apt-get update
+      - apt-get install -y libssl-dev python-dev curl imagemagick
       - curl -sf https://www.getlektor.com/install.sh | sh
       - lektor --help
