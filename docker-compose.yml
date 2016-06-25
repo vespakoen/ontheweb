@@ -19,10 +19,11 @@ https-portal:
       www.humming.guru -> http://hummingwww,
       humming.guru -> http://hummingwww
     PRODUCTION: "true"
+    WEBSOCKET: "true"
 
 # KOENSCHMEETS
 koenschmeetswww:
-  build: .
+  build: koenschmeets
 koenschmeetsci:
   image: vespakoen/drone:0.5.1
   restart: always
