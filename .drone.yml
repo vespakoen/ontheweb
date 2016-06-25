@@ -9,8 +9,7 @@ pipeline:
       - curl -sf https://www.getlektor.com/install.sh | sed '/stdin/d;s/input = .*/return/' > install.sh
       - chmod +x ./install.sh
       - ./install.sh
-      - lektor --help
-      - cd koenschmeets
+      - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
       - lektor build -O public
   publish-koenschmeets:
     image: vespakoen/drone-docker:0.5.1
