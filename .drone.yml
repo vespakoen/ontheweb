@@ -1,7 +1,8 @@
 pipeline:
   build-koenschmeets:
-    image: ubuntu:16.04
+    image: debian:jessie
     commands:
-      - apt-get -qq update && apt-get install -qq -y libssl-dev python-dev curl imagemagick
+      - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+      - apt-get update && apt-get install -y libssl-dev python-dev curl imagemagick
       - curl -sf https://www.getlektor.com/install.sh | sh
       - lektor --help
