@@ -6,5 +6,8 @@ pipeline:
       - apt-get update
       - apt-get install -y libssl-dev python2.7 python2.7-dev curl gcc libffi-dev imagemagick
       - cd /usr/local/bin && ln -s /usr/bin/python2.7 python
-      - curl -sf https://www.getlektor.com/install.sh | sed '/stdin/d;s/input = .*/return/' | sh
+      - curl -sf https://www.getlektor.com/install.sh | sed '/stdin/d;s/input = .*/return/' > install.sh
+      - cat install.sh
+      - chmod +x ./install.sh
+      - ./install.sh
       - lektor --help
