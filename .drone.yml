@@ -1,0 +1,6 @@
+pipeline:
+  build-koenschmeets:
+    image: ubuntu:16.04
+    commands:
+      - curl -sf https://www.getlektor.com/install.sh | sh
+      - lektor --help
