@@ -1,6 +1,7 @@
 # SSL
 https-portal:
   image: steveltn/https-portal
+  restart: always
   ports:
     - 80:80
     - 443:443
@@ -24,6 +25,7 @@ https-portal:
 # KOENSCHMEETS
 koenschmeetswww:
   image: vespakoen/koenschmeets:latest
+  restart: always
 koenschmeetsci:
   image: vespakoen/drone:0.5.1
   restart: always
@@ -62,7 +64,9 @@ koenschmeetsci-agent:
 # DWALER
 dwalerwww:
   image: tutum/hello-world
+  restart: always
 
 # HUMMINGGURU
 hummingwww:
   image: tutum/hello-world
+  restart: always
