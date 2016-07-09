@@ -74,6 +74,8 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
+      - ls /drone
+      - pwd
       - source ./env.sh
       - docker-compose pull
       - cat koenschmeets_changed && docker-compose restart koenschmeetswww
