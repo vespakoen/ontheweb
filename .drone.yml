@@ -14,6 +14,18 @@ pipeline:
     restore: true
     when:
       event: [ pull_request, push ]
+  build-drone:
+    image: golang:1.6
+    environment:
+      - GO15VENDOREXPERIMENT=1
+      - GOPATH=/drone
+    commands:
+      - export PATH=$PATH:$GOPATH/bin
+      - cd drone
+      # - pwd
+      # - make deps
+      # - make gen
+      - make build
   test-dwaler:
     image: node:6
     commands:
