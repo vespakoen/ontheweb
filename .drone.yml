@@ -3,7 +3,7 @@ pipeline:
     image: bravissimolabs/alpine-git
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
-      - git diff @~..@
+      - git diff -–name-only @~..@
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
@@ -11,7 +11,7 @@ pipeline:
     restore: true
     when:
       event: [ pull_request, push ]
-  build-dwaler:
+  test-dwaler:
     image: node:6
     commands:
       - cd dwaler
