@@ -74,7 +74,7 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - source ./env.sh
+      - eval $(cat ./env.sh)
       - docker-compose pull
       - cat koenschmeets_changed && docker-compose restart koenschmeetswww
       - cat dwaler_changed && docker-compose restart dwalerwww
