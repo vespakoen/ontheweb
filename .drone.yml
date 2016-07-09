@@ -29,7 +29,7 @@ pipeline:
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/dwaler -f dwaler/Dockerfile dwaler
       - docker push vespakoen/dwaler
-      - docker ps | grep dwalerwww | awk '{ print $1 }'
+      - docker ps | grep dwalerwww | cut -d' ' -f1
       - docker restart $(docker ps | grep dwalerwww | cut -d' ' -f1)
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
