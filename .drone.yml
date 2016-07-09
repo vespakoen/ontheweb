@@ -23,7 +23,6 @@ pipeline:
       - export PATH=$PATH:$GOPATH/bin
       - cd drone
       - make deps
-      - make gen
       - make build
   test-dwaler:
     image: node:6
