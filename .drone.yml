@@ -75,7 +75,9 @@ pipeline:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
-      - docker-compose pull
+      - docker-compose pull koenschmeetswww dwalerwww
+      - docker-compose stop koenschmeetswww dwalerwww
+      - docker-compose rm koenschmeetswww dwalerwww
       - docker-compose restart koenschmeetswww dwalerwww
   save-cache:
     image: plugins/sftp-cache:latest
