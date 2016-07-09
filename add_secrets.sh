@@ -13,9 +13,9 @@ function rm_secret {
 rm_secret DOCKER_REGISTRY
 rm_secret DOCKER_USERNAME
 rm_secret DOCKER_PASSWORD
-add_secret vespakoen/drone-docker:0.5.1 DOCKER_REGISTRY $DOCKER_REGISTRY_URL
-add_secret vespakoen/drone-docker:0.5.1 DOCKER_USERNAME $DOCKER_REGISTRY_USERNAME
-add_secret vespakoen/drone-docker:0.5.1 DOCKER_PASSWORD $DOCKER_REGISTRY_PASSWORD
+add_secret docker DOCKER_REGISTRY $DOCKER_REGISTRY_URL
+add_secret docker DOCKER_USERNAME $DOCKER_REGISTRY_USERNAME
+add_secret docker DOCKER_PASSWORD $DOCKER_REGISTRY_PASSWORD
 
 rm_secret SFTP_CACHE_SERVER
 rm_secret SFTP_CACHE_USERNAME
