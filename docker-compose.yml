@@ -84,3 +84,9 @@ dwalerwww:
 hummingwww:
   image: tutum/hello-world
   restart: always
+
+# WATCHTOWER
+watchtower:
+  image: centurylink/watchtower
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock

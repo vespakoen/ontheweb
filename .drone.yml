@@ -29,7 +29,6 @@ pipeline:
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/dwaler -f dwaler/Dockerfile dwaler
       - docker push vespakoen/dwaler
-      - docker restart `docker ps | grep dwalerwww | cut -d' ' -f1`
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
       - DOCKER_PASSWORD=$$DOCKER_PASSWORD
@@ -64,7 +63,6 @@ pipeline:
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile koenschmeets
       - docker push vespakoen/koenschmeets
-      - docker restart `docker ps | grep koenschmeetswww | cut -d' ' -f1`
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
       - DOCKER_PASSWORD=$$DOCKER_PASSWORD
