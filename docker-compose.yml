@@ -84,11 +84,3 @@ dwalerwww:
 hummingwww:
   image: tutum/hello-world
   restart: always
-
-# WATCHTOWER
-watchtower:
-  image: dimag/watchtower
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-  command:
-    --cleanup --interval=60 --debug

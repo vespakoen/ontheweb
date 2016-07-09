@@ -69,6 +69,12 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  update-server:
+    image: dduportal/docker-compose
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      docker-compose ps
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
