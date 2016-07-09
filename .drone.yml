@@ -28,11 +28,11 @@ pipeline:
     image: vespakoen/lektor:latest
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
+      - git diff @~..@
       - lektor build -O public
   publish-koenschmeets:
     image: docker
     commands:
-      - git diff @~..@
       - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile koenschmeets
