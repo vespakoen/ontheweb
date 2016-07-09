@@ -36,7 +36,7 @@ pipeline:
     commands:
       - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-      - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile
+      - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile koenschmeets
       - docker push vespakoen/koenschmeets
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
