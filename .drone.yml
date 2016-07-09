@@ -4,9 +4,9 @@ pipeline:
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
       - git diff --name-only @~..@
-      - git diff --exit-code --name-only @~..@ -- dwaler/ && echo "No changes in dwaler/" || echo "true" > dwaler_changed
-      - git diff --exit-code --name-only @~..@ -- koenschmeets/ && echo "No changes in koenschmeets/" || echo "true" > koenschmeets_changed
-      - git diff --exit-code --name-only @~..@ -- lektor/ && echo "No changes in lektor/" || echo "true" > lektor_changed
+      - git diff --exit-code --name-only @~..@ -- dwaler/ || echo "true" > dwaler_changed
+      - git diff --exit-code --name-only @~..@ -- koenschmeets/ || echo "true" > koenschmeets_changed
+      - git diff --exit-code --name-only @~..@ -- lektor/ || echo "true" > lektor_changed
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
