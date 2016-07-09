@@ -49,7 +49,6 @@ koenschmeetsci:
 koenschmeetsci-agent:
   image: drone/drone:0.5
   restart: always
-  privileged: true
   environment:
     DRONE_SERVER: http://koenschmeetsci:8000
     DRONE_SECRET: $DRONE_AGENT_SECRET
