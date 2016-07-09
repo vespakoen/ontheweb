@@ -75,7 +75,7 @@ pipeline:
       - docker-compose pull koenschmeetswww dwalerwww
       - docker-compose stop koenschmeetswww dwalerwww
       - docker-compose rm -f koenschmeetswww dwalerwww
-      - docker-compose up -d
+      - docker-compose up -d koenschmeetswww dwalerwww
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
