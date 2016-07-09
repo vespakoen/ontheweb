@@ -2,7 +2,7 @@ var express = require('express')
 var app = express()
 
 app.get('/', (req, res) => {
-  res.send('Hello, World. This is dwaler, served by express yall');
+  res.send('Hello, World. This is dwaler, served by express =)');
 })
 
 app.listen(process.env.DWALER_PORT, () => 
