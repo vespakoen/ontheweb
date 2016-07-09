@@ -4,13 +4,9 @@ pipeline:
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
       - git diff --name-only @~..@
-      - git diff --name-only @~..@ -- dwaler/
-      - git diff --name-only @~..@ -- koenschmeets/
-      - git diff --name-only @~..@ -- lektor/
-      - git diff --exit-code --name-only @~..@ -- dwaler/ && echo "true" > dwaler_changed || echo "No changes in dwaler/"
-      - git diff --exit-code --name-only @~..@ -- koenschmeets/ && echo "true" > koenschmeets_changed || echo "No changes in koenschmeets/"
-      - git diff --exit-code --name-only @~..@ -- lektor/ && echo "true" > lektor_changed || echo "No changes in lektor/"
-      - ls
+      - git diff --exit-code --name-only @~..@ -- dwaler/ && echo "No changes in dwaler/" || echo "true" > dwaler_changed
+      - git diff --exit-code --name-only @~..@ -- koenschmeets/ && echo "No changes in koenschmeets/" || echo "true" > koenschmeets_changed
+      - git diff --exit-code --name-only @~..@ -- lektor/ && echo "No changes in lektor/" || echo "true" > lektor_changed
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
@@ -21,11 +17,13 @@ pipeline:
   test-dwaler:
     image: node:6
     commands:
+      - cat dwaler_changed || exit 0
       - cd dwaler
       - npm install
   publish-lektor:
     image: docker
     commands:
+      - cat lektor_changed || exit 0
       - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/lektor -f lektor/Dockerfile lektor
@@ -39,11 +37,13 @@ pipeline:
   build-koenschmeets:
     image: vespakoen/lektor:latest
     commands:
+      - cat koenschmeets_changed || exit 0
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
       - lektor build -O public
   publish-koenschmeets:
     image: docker
     commands:
+      - cat koenschmeets_changed || exit 0
       - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile koenschmeets
