@@ -73,7 +73,7 @@ pipeline:
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
       - docker-compose pull koenschmeetswww dwalerwww
-      - docker-compose stop koenschmeetswww dwalerwww https-portal
+      - docker-compose stop koenschmeetswww dwalerwww
       - docker-compose rm -f koenschmeetswww dwalerwww
       - docker-compose start
   save-cache:
