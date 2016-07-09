@@ -2,7 +2,7 @@ pipeline:
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
-      - dwaler/node_modules
+      - /drone/src/github.com/vespakoen/ontheweb/dwaler/node_modules
     restore: true
     when:
       event: [ pull_request, push ]
@@ -14,7 +14,7 @@ pipeline:
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
-      - dwaler/node_modules
+      - /drone/src/github.com/vespakoen/ontheweb/dwaler/node_modules
     rebuild: true
     when:
       event: [ push ]
