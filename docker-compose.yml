@@ -90,3 +90,5 @@ watchtower:
   image: centurylink/watchtower
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
+  command:
+    --cleanup --interval=60 --debug
