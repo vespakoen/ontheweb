@@ -3,7 +3,7 @@ pipeline:
     image: bravissimolabs/alpine-git
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
-      - git diff -–name-only @~..@
+      - git diff --name-only @~..@
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
