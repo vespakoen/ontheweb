@@ -20,6 +20,21 @@ pipeline:
       - cat dwaler_changed || exit 0
       - cd dwaler
       - npm install
+      - npm test
+  publish-dwaler:
+    image: docker
+    commands:
+      - cat dwaler_changed || exit 0
+      - docker ps
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/dwaler -f dwaler/Dockerfile dwaler
+      - docker push vespakoen/dwaler
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   publish-lektor:
     image: docker
     commands:
