@@ -1,4 +1,9 @@
 pipeline:
+  check-diffs:
+    image: bravissimolabs/alpine-git
+    commands:
+      - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
+      - git diff @~..@
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
@@ -28,7 +33,6 @@ pipeline:
     image: vespakoen/lektor:latest
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
-      - git diff @~..@
       - lektor build -O public
   publish-koenschmeets:
     image: docker
