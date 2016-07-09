@@ -29,7 +29,7 @@ pipeline:
     debug: true
     repo: vespakoen/koenschmeets
     tag: ["latest", "${DRONE_BUILD_NUMBER}"]
-    storage_driver: overlay
+    # storage_driver: vfs
     context: koenschmeets
     dockerfile: koenschmeets/Dockerfile
   save-cache:
