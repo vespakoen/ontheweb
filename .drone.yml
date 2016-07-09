@@ -25,7 +25,6 @@ pipeline:
     image: docker
     commands:
       - cat dwaler_changed || exit 0
-      - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/dwaler -f dwaler/Dockerfile dwaler
       - docker push vespakoen/dwaler
@@ -39,7 +38,6 @@ pipeline:
     image: docker
     commands:
       - cat lektor_changed || exit 0
-      - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/lektor -f lektor/Dockerfile lektor
       - docker push vespakoen/lektor
@@ -59,7 +57,6 @@ pipeline:
     image: docker
     commands:
       - cat koenschmeets_changed || exit 0
-      - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile koenschmeets
       - docker push vespakoen/koenschmeets
@@ -77,7 +74,7 @@ pipeline:
       - cd /drone/src/github.com/vespakoen/ontheweb
       - docker-compose pull koenschmeetswww dwalerwww
       - docker-compose stop koenschmeetswww dwalerwww
-      - docker-compose rm -y koenschmeetswww dwalerwww
+      - docker-compose rm -f koenschmeetswww dwalerwww
       - docker-compose restart koenschmeetswww dwalerwww
   save-cache:
     image: plugins/sftp-cache:latest
