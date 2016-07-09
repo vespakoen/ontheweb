@@ -75,10 +75,8 @@ pipeline:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
-      - ls
-      - eval `cat ./env.sh`
       - docker-compose pull
-      - docker-compose restart
+      - docker-compose restart koenschmeetswww dwalerwww
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
