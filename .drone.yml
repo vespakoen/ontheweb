@@ -11,34 +11,28 @@ pipeline:
     commands:
       - cd dwaler
       - npm install
-  # publish-lektor:
-  #   image: docker
-  #   commands:
-  #     - docker ps
-  #     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-  #     - docker build -t vespakoen/lektor -f lektor/Dockerfile lektor
-  #     - docker push vespakoen/lektor
-  #   environment:
-  #     - DOCKER_USERNAME=$$DOCKER_USERNAME
-  #     - DOCKER_PASSWORD=$$DOCKER_PASSWORD
-  #     - DOCKER_EMAIL=$$DOCKER_EMAIL
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
+  publish-lektor:
+    image: docker
+    commands:
+      - docker ps
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/lektor -f lektor/Dockerfile lektor
+      - docker push vespakoen/lektor
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   build-koenschmeets:
     image: vespakoen/lektor:latest
     commands:
-      # - echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-      # - apt-get update
-      # - apt-get install -y libssl-dev python2.7 python2.7-dev curl gcc libffi-dev imagemagick
-      # - cd /usr/local/bin && ln -s /usr/bin/python2.7 python
-      # - curl -sf https://www.getlektor.com/install.sh | sed '/stdin/d;s/input = .*/return/' > install.sh
-      # - chmod +x ./install.sh
-      # - ./install.sh
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
       - lektor build -O public
   publish-koenschmeets:
     image: docker
     commands:
+      - git diff @~..@
       - docker ps
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile koenschmeets
