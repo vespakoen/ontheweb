@@ -87,7 +87,7 @@ hummingwww:
 
 # WATCHTOWER
 watchtower:
-  image: centurylink/watchtower
+  image: dimag/watchtower
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   command:
