@@ -3,7 +3,10 @@ pipeline:
     image: bravissimolabs/alpine-git
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
-      - git diff --name-only @~..@
+      - git diff --name-only @~..@ dwaler/ | (test -s /dev/stdin && cat > dwaler_changed || echo "No changes in dwaler")
+      - git diff --name-only @~..@ koenschmeets/ | (test -s /dev/stdin && cat > koenschmeets_changed || echo "No changes in koenschmeets")
+      - git diff --name-only @~..@ lektor/ | (test -s /dev/stdin && cat > lektor_changed || echo "No changes in lektor")
+      - ls
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
