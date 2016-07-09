@@ -16,3 +16,12 @@ rm_secret DOCKER_PASSWORD
 add_secret vespakoen/drone-docker:0.5.1 DOCKER_REGISTRY $DOCKER_REGISTRY_URL
 add_secret vespakoen/drone-docker:0.5.1 DOCKER_USERNAME $DOCKER_REGISTRY_USERNAME
 add_secret vespakoen/drone-docker:0.5.1 DOCKER_PASSWORD $DOCKER_REGISTRY_PASSWORD
+
+rm_secret SFTP_CACHE_SERVER
+rm_secret SFTP_CACHE_USERNAME
+rm_secret SFTP_CACHE_PASSWORD
+rm_secret SFTP_CACHE_PATH
+add_secret plugins/sftp-cache:latest SFTP_CACHE_SERVER $SFTP_CACHE_SERVER
+add_secret plugins/sftp-cache:latest SFTP_CACHE_USERNAME $SFTP_CACHE_USERNAME
+add_secret plugins/sftp-cache:latest SFTP_CACHE_PASSWORD $SFTP_CACHE_PASSWORD
+add_secret plugins/sftp-cache:latest SFTP_CACHE_PATH $SFTP_CACHE_PATH

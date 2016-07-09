@@ -1,4 +1,16 @@
 pipeline:
+  load-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - /drone/src/github.com/vespakoen/ontheweb/dwaler/node_modules
+    restore: true
+    when:
+      event: [ pull_request, push ]
+  build-dwaler:
+    image: node:6
+    commands:
+      - cd dwaler
+      - npm install
   build-koenschmeets:
     image: debian:wheezy
     commands:
@@ -19,3 +31,16 @@ pipeline:
     storage_driver: vfs
     context: koenschmeets
     dockerfile: koenschmeets/Dockerfile
+  save-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - /drone/src/github.com/vespakoen/ontheweb/dwaler/node_modules
+    rebuild: true
+    when:
+      event: [ push ]
+services:
+  cache:
+    image: atmoz/sftp
+    volumes:
+      - /cache:/home/cache/cache
+    command: cache:cache:1001

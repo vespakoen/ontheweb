@@ -1,7 +1,7 @@
 #!/bin/sh
-eval "$(docker-machine env ks)"
 . ./env.sh
-lektor build -O public
-docker-compose build
+docker-machine ssh ks mkdir /config
+docker-machine scp ./default.conf.erb ks:/config/
+docker-machine scp ./default.ssl.conf.erb ks:/config/
 docker-compose up -d
 docker-compose logs -f

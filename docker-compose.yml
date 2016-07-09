@@ -10,6 +10,9 @@ https-portal:
     - koenschmeetsci
     - dwalerwww
     - hummingwww
+  volumes:
+    - /config/default.conf.erb:/var/lib/nginx-conf/default.conf.erb
+    - /config/default.ssl.conf.erb:/var/lib/nginx-conf/default.ssl.conf.erb
   environment:
     DOMAINS: >
       koenschmeets.nl -> http://koenschmeetswww,
