@@ -74,7 +74,10 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      docker-compose ps
+      - . ./env.sh
+      - docker-compose pull
+      - cat koenschmeets_changed && docker-compose restart koenschmeetswww
+      - cat dwaler_changed && docker-compose restart dwalerwww
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
