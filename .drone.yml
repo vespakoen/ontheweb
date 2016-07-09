@@ -37,14 +37,6 @@ pipeline:
       - cd /drone/src/github.com/vespakoen/ontheweb/koenschmeets
       - lektor build -O public
   publish-koenschmeets:
-    image: vespakoen/drone-docker:0.5.1
-    debug: true
-    repo: vespakoen/koenschmeets
-    tag: ["latest", "${DRONE_BUILD_NUMBER}"]
-    # storage_driver: vfs
-    context: koenschmeets
-    dockerfile: koenschmeets/Dockerfile
-  publish-koenschmeets:
     image: docker
     commands:
       - docker ps
