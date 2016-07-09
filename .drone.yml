@@ -38,9 +38,3 @@ pipeline:
   #   storage_driver: vfs
   #   context: koenschmeets
   #   dockerfile: koenschmeets/Dockerfile
-services:
-  cache:
-    image: atmoz/sftp
-    volumes:
-      - /cache:/home/cache/vespakoen/ontheweb
-    command: cache:cache:1001

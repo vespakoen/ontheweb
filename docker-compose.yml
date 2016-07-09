@@ -63,6 +63,14 @@ koenschmeetsci-agent:
   volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
   command: agent
+koenschmeetsci-cache:
+  image: atmoz/sftp
+  ports:
+    - "2222:22"
+  volumes:
+    - /cache:/home/cache/share
+    - /config/sftp.sh:/etc/sftp.d/init.sh:ro
+  command: ${SFTP_CACHE_USERNAME}:${SFTP_CACHE_PASSWORD}:1001
 
 # DWALER
 dwalerwww:
