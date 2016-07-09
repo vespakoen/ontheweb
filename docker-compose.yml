@@ -11,6 +11,7 @@ https-portal:
     - dwalerwww
     - hummingwww
   volumes:
+    - /config/nginx.conf.erb:/var/lib/nginx-conf/nginx.conf.erb
     - /config/default.conf.erb:/var/lib/nginx-conf/default.conf.erb
     - /config/default.ssl.conf.erb:/var/lib/nginx-conf/default.ssl.conf.erb
   environment:
