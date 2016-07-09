@@ -1,6 +1,0 @@
-[submodule "drone"]
-	path = drone
-	url = https://github.com/vespakoen/drone.git
-[submodule "drone-ui"]
-	path = drone-ui
-	url = https://github.com/vespakoen/drone-ui.git
