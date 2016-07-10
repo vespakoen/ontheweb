@@ -31,7 +31,7 @@ koenschmeetswww:
   image: vespakoen/koenschmeets:latest
   restart: always
 koenschmeetsci:
-  image: drone/drone:0.5
+  image: vespakoen/drone:0.5.1
   restart: always
   privileged: true
   environment:
@@ -47,7 +47,7 @@ koenschmeetsci:
    - "/drone:/var/lib/drone"
    - "/var/run/docker.sock:/var/run/docker.sock"
 koenschmeetsci-agent:
-  image: drone/drone:0.5
+  image: vespakoen/drone:0.5.1
   restart: always
   environment:
     DRONE_SERVER: http://koenschmeetsci:8000
