@@ -453,7 +453,9 @@ var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-fetch(_config2.default.TOP_TRACKS_URL).then(function (result) {
+fetch(_config2.default.TOP_TRACKS_URL).then(function (res) {
+  return res.json();
+}).then(function (result) {
   console.log(result);
 });
 
