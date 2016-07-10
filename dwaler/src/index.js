@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import dwalerTheme from './theme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -31,7 +31,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+      <MuiThemeProvider muiTheme={getMuiTheme(dwalerTheme)}>
         <div id="app">
           <AppBar
             title="Dwaler"
