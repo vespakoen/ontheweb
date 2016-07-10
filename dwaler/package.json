@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified, succeeding anyways\" && exit 0",
     "build": "browserify -t babelify src/index.js > public/app.js",
-    "watch": "watchify -t babelify src/index.js -o public/app.js",
+    "watch": "budo --debug --pushstate --host 0.0.0.0 --dir ./public --serve app.js --live --open src/index.js -- -t babelify",
     "start": "node index.js"
   },
   "author": "Koen Schmeets",
@@ -20,10 +20,10 @@
     "babel-preset-stage-0": "^6.5.0",
     "babelify": "^7.3.0",
     "browserify": "^13.0.1",
+    "budo": "^8.3.0",
     "material-ui": "^0.15.2",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
-    "react-tap-event-plugin": "^1.0.0",
-    "watchify": "^3.7.0"
+    "react-tap-event-plugin": "^1.0.0"
   }
 }
