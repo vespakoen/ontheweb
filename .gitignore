@@ -1,4 +1,5 @@
-dwaler/node_modules/
+node_modules/
 koenschmeets/public/
 env.sh
 .tern-port
+npm-debug.log
