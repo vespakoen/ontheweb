@@ -2,6 +2,11 @@ import 'whatwg-fetch'
 import config from '../config'
 import React from 'react'
 import ReactDOM from 'react-dom'
+
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -23,26 +28,28 @@ class App extends React.Component {
 
   render() {
     return (
-      <div id="app">
-        <AppBar
-          title="Dwaler"
-          iconElementRight={
-            <IconMenu
-              iconButtonElement={
-                <IconButton><MoreVertIcon /></IconButton>
-              }
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-              <MenuItem primaryText="Help" />
-              <MenuItem primaryText="Sign out" />
-            </IconMenu>
-          }
-        />
-        <h1>Dwaler</h1>
-        Welcome dwaler
-        { JSON.stringify(this.state.tracks) }
-      </div>
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+        <div id="app">
+          <AppBar
+            title="Dwaler"
+            iconElementRight={
+              <IconMenu
+                iconButtonElement={
+                  <IconButton><MoreVertIcon /></IconButton>
+                }
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+              >
+                <MenuItem primaryText="Help" />
+                <MenuItem primaryText="Sign out" />
+              </IconMenu>
+            }
+          />
+          <h1>Dwaler</h1>
+          Welcome dwaler
+          { JSON.stringify(this.state.tracks) }
+        </div>
+      </MuiThemeProvider>
     )
   }
 }
