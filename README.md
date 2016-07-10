@@ -1,5 +1,7 @@
 # ontheweb
 
+[![Build Status](https://ci.koenschmeets.nl/api/badges/vespakoen/ontheweb/status.svg)](https://ci.koenschmeets.nl/vespakoen/ontheweb)
+
 This is the repository that contains my personal website, and websites for my open source projects.
 
 ## What's in it
