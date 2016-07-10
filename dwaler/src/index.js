@@ -10,6 +10,11 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+
   componentDidMount() {
     fetch(config.TOP_TRACKS_URL)
       .then(res => res.json())
