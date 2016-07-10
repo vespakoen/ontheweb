@@ -3,10 +3,10 @@ pipeline:
     image: bravissimolabs/alpine-git
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
-      - git diff --name-only @~..@
-      - git diff --exit-code --name-only @~..@ -- dwaler/ || echo "true" > dwaler_changed
-      - git diff --exit-code --name-only @~..@ -- koenschmeets/ || echo "true" > koenschmeets_changed
-      - git diff --exit-code --name-only @~..@ -- lektor/ || echo "true" > lektor_changed
+      - git diff --name-only ${DRONE_PREV_COMMIT_SHA}~..@
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}~..@ -- dwaler/ || echo "true" > dwaler_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}~..@ -- koenschmeets/ || echo "true" > koenschmeets_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}~..@ -- lektor/ || echo "true" > lektor_changed
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
