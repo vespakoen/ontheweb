@@ -76,14 +76,14 @@ pipeline:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
-      - (cat dwaler_changed && docker-compose pull dwalerwww) || true
-      - (cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true
-      - (cat dwaler_changed && docker-compose stop dwalerwww) || true
-      - (cat koenschmeets_changed && docker-compose stop koenschmeetswww) || true
-      - (cat dwaler_changed && docker-compose rm -f dwalerwww) || true
-      - (cat koenschmeets_changed && docker-compose rm -f koenschmeetswww) || true
-      - (cat dwaler_changed && docker-compose up -d dwalerwww) || true
-      - (cat koenschmeets_changed && docker-compose up -d koenschmeetswww) || true
+      - bash -c "(cat dwaler_changed && docker-compose pull dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true"
+      - bash -c "(cat dwaler_changed && docker-compose stop dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose stop koenschmeetswww) || true"
+      - bash -c "(cat dwaler_changed && docker-compose rm -f dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose rm -f koenschmeetswww) || true"
+      - bash -c "(cat dwaler_changed && docker-compose up -d dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose up -d koenschmeetswww) || true"
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
