@@ -94,3 +94,4 @@ pipeline:
       event: [ push ]
   notify:
     image: plugins/slack:latest
+    channel: general
