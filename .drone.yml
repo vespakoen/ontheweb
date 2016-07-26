@@ -93,4 +93,4 @@ pipeline:
     when:
       event: [ push ]
   notify:
-    image: slack
+    image: plugins/slack:latest

@@ -3,6 +3,7 @@
 . ./env.sh
 
 function add_secret {
+  echo "Adding secret: $2"
   docker run -v $(pwd):/project --rm drone/drone:0.5 -t $DRONE_USER_TOKEN -s https://ci.koenschmeets.nl secret add --image=$1 vespakoen/ontheweb $2 "$3"
 }
 

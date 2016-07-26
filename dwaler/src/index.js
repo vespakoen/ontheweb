@@ -11,11 +11,25 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import AppBar from 'material-ui/AppBar';
+import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+
+import Menu from './components/Menu'
+
+const styles = {
+  root: {
+    width: '100%',
+    clear: 'both'
+  },
+  content: {
+    width: '70%',
+    float: 'left'
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
@@ -48,8 +62,13 @@ class App extends React.Component {
               </IconMenu>
             }
           />
-          <h1>Dwaler</h1>
-          Welcome dwaler
+          <div style={styles.root}>
+            <Menu />
+            <div style={styles.content}>
+              content
+            </div>
+          </div>
+          
           { JSON.stringify(this.state.tracks) }
         </div>
       </MuiThemeProvider>
