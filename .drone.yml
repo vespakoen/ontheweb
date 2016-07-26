@@ -92,3 +92,5 @@ pipeline:
     rebuild: true
     when:
       event: [ push ]
+  notify:
+    image: slack
