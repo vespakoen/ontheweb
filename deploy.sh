@@ -1,6 +1,6 @@
 #!/bin/sh
 . ./env.sh
-docker-machine ssh ks mkdir /config
+docker-machine ssh ks mkdir /config 2> /dev/null
 docker-machine scp ./nginx.conf.erb ks:/config/
 docker-machine scp ./default.conf.erb ks:/config/
 docker-machine scp ./default.ssl.conf.erb ks:/config/

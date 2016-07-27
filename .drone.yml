@@ -7,6 +7,8 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- dwaler/ || echo "true" > dwaler_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- koenschmeets/ || echo "true" > koenschmeets_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- lektor/ || echo "true" > lektor_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- https-portal/ || echo "true" > https-portal_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- sftp-cache/ || echo "true" > sftp-cache_changed
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
@@ -64,6 +66,33 @@ pipeline:
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/koenschmeets -f koenschmeets/Dockerfile koenschmeets
       - docker push vespakoen/koenschmeets
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+# HTTPS-PORTAL
+  publish-https-portal:
+    image: docker
+    commands:
+      - cat https-portal_changed || exit 0
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/https-portal -f https-portal/Dockerfile https-portal
+      - docker push vespakoen/https-portal
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  publish-sftp-cache:
+    image: docker
+    commands:
+      - cat sftp-cache_changed || exit 0
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/sftp-cache -f sftp-cache/Dockerfile sftp-cache
+      - docker push vespakoen/sftp-cache
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
       - DOCKER_PASSWORD=$$DOCKER_PASSWORD
