@@ -8,7 +8,7 @@ app.get(config.TOP_TRACKS_URL, (req, res) => {
   res.json({
     results: [
       {
-        name_nl: 'Top tracks'
+        name_nl: 'Top track'
       }
     ],
     page: 1,
