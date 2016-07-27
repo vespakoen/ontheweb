@@ -20,8 +20,8 @@ pipeline:
   test-dwaler:
     image: node:6
     environment:
-      NPM_CONFIG_LOGLEVEL: "warn"
-      NPM_CONFIG_COLOR: "always"
+      # NPM_CONFIG_LOGLEVEL: "warn"
+      # NPM_CONFIG_COLOR: "always"
     commands:
       - cat dwaler_changed || exit 0
       - cd dwaler
@@ -102,7 +102,7 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-# DEPLOY
+# DEPLOY (now handled by docker cloud, left here as reference for others)
   # update-server:
   #   image: dduportal/docker-compose
   #   volumes:
