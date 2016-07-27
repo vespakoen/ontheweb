@@ -26,6 +26,7 @@ pipeline:
       - cat dwaler_changed || exit 0
       - cd dwaler
       - npm install
+      - npm run build
       - npm test
   publish-dwaler:
     image: docker
