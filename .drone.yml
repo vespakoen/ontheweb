@@ -19,6 +19,9 @@ pipeline:
 # DWALER
   test-dwaler:
     image: node:6
+    environment:
+      NPM_CONFIG_LOGLEVEL: "warn"
+      NPM_CONFIG_COLOR: "always"
     commands:
       - cat dwaler_changed || exit 0
       - cd dwaler

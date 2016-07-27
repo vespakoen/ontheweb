@@ -31,6 +31,8 @@ https-portal:
 koenschmeetswww:
   image: vespakoen/koenschmeets:latest
   restart: always
+
+# CI
 koenschmeetsci:
   image: drone/drone:0.5
   restart: always
@@ -59,7 +61,7 @@ koenschmeetsci-agent:
     I_AGREE_TO_FIX_BUGS_AND_NOT_FILE_BUGS: "true"
     DRONE_DEBUG: "true"
     # DRONE_PLUGIN_PULL: "false"
-    DRONE_PLUGIN_PRIVILEGED: "plugins/docker,plugins/docker:*,vespakoen/drone-docker:*"
+    DRONE_PLUGIN_PRIVILEGED: "plugins/docker,plugins/docker:*"
   links:
     - koenschmeetsci
   volumes:
