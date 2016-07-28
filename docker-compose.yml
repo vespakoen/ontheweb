@@ -12,9 +12,6 @@ https-portal:
     - hummingwww
   volumes:
     - /data/ssl_certs:/var/lib/https-portal
-    - /config/nginx.conf.erb:/var/lib/nginx-conf/nginx.conf.erb
-    - /config/default.conf.erb:/var/lib/nginx-conf/default.conf.erb
-    - /config/default.ssl.conf.erb:/var/lib/nginx-conf/default.ssl.conf.erb
   environment:
     DOMAINS: >
       koenschmeets.nl -> http://koenschmeetswww,
@@ -73,7 +70,6 @@ koenschmeetsci-cache:
     - "2222:22"
   volumes:
     - /cache:/home/cache/share
-    - /config/sftp.sh:/etc/sftp.d/init.sh:ro
   command: ${SFTP_CACHE_USERNAME}:${SFTP_CACHE_PASSWORD}:1001
 
 # DWALER
