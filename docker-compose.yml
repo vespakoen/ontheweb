@@ -12,9 +12,6 @@ https-portal:
     - hummingwww
   volumes:
     - /data/ssl_certs:/var/lib/https-portal
-    - /config/nginx.conf.erb:/var/lib/nginx-conf/nginx.conf.erb
-    - /config/default.conf.erb:/var/lib/nginx-conf/default.conf.erb
-    - /config/default.ssl.conf.erb:/var/lib/nginx-conf/default.ssl.conf.erb
   environment:
     DOMAINS: >
       koenschmeets.nl -> http://koenschmeetswww,
@@ -31,6 +28,8 @@ https-portal:
 koenschmeetswww:
   image: vespakoen/koenschmeets:latest
   restart: always
+
+# CI
 koenschmeetsci:
   image: drone/drone:0.5
   restart: always
@@ -59,7 +58,7 @@ koenschmeetsci-agent:
     I_AGREE_TO_FIX_BUGS_AND_NOT_FILE_BUGS: "true"
     DRONE_DEBUG: "true"
     # DRONE_PLUGIN_PULL: "false"
-    DRONE_PLUGIN_PRIVILEGED: "plugins/docker,plugins/docker:*,vespakoen/drone-docker:*"
+    DRONE_PLUGIN_PRIVILEGED: "plugins/docker,plugins/docker:*"
   links:
     - koenschmeetsci
   volumes:
@@ -71,7 +70,6 @@ koenschmeetsci-cache:
     - "2222:22"
   volumes:
     - /cache:/home/cache/share
-    - /config/sftp.sh:/etc/sftp.d/init.sh:ro
   command: ${SFTP_CACHE_USERNAME}:${SFTP_CACHE_PASSWORD}:1001
 
 # DWALER
