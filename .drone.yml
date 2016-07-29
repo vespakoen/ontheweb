@@ -126,3 +126,5 @@ pipeline:
   notify:
     image: plugins/slack:latest
     channel: general
+    when:
+      status:  [ failure, success ]
