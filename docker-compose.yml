@@ -21,7 +21,7 @@ https-portal:
       dwaler.com -> http://dwalerwww,
       www.humming.guru -> http://hummingwww,
       humming.guru -> http://hummingwww
-    PRODUCTION: "true"
+    STAGE: staging
     WEBSOCKET: "true"
 
 # KOENSCHMEETS
@@ -44,8 +44,10 @@ koenschmeetsci:
     I_AGREE_TO_FIX_BUGS_AND_NOT_FILE_BUGS: "true"
     DRONE_DEBUG: "true"
   volumes:
-   - "/drone:/var/lib/drone"
+   - "/data/drone:/var/lib/drone"
    - "/var/run/docker.sock:/var/run/docker.sock"
+  ports:
+    - 8000:8000
 koenschmeetsci-agent:
   image: drone/drone:0.5
   restart: always
@@ -63,13 +65,14 @@ koenschmeetsci-agent:
     - koenschmeetsci
   volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
+    - "/root/.vagrant.d/insecure_private_key:/vagrant_key"
   command: agent
 koenschmeetsci-cache:
   image: vespakoen/sftp-cache
   ports:
     - "2222:22"
   volumes:
-    - /cache:/home/cache/share
+    - /data/cache:/home/cache/share
   command: ${SFTP_CACHE_USERNAME}:${SFTP_CACHE_PASSWORD}:1001
 
 # DWALER
