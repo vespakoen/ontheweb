@@ -2,5 +2,5 @@
 
 echo "Running CI for HummingGuru on OSX"
 
-sudo gem install fastlane
+sudo gem install fastlane --verbose
 fastlane testflight
