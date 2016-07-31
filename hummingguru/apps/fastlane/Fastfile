@@ -1,0 +1,50 @@
+
+fastlane_version "1.91.0"
+
+default_platform :ios
+
+platform :ios do
+  before_all do
+    ENV["SLACK_URL"] = ""
+  end
+
+  desc "Submits a new Beta Build to Apple TestFlight"
+  lane :testflight do
+    cocoapods
+    increment_build_number(
+      xcodeproj: "ios/HummingGuru.xcodeproj"
+    )
+    sh "cd .. && react-native bundle --dev false --platform ios --entry-file ./index.ios.js --bundle-output ./ios/main.jsbundle"
+    match(
+      app_identifier: "guru.humming",
+      type: "appstore",
+      git_url: "git@github.com:vespakoen/hummingguru-certs.git",
+      git_branch: "master",
+      force_for_new_devices: true,
+      verbose: true
+    )
+    gym(
+      project: "ios/HummingGuru.xcodeproj",
+      configuration: "Release",
+      scheme: "hummingguru",
+      export_method: "app-store",
+      use_legacy_build_api: false
+    )
+    slack(
+      channel: "builds",
+      default_payloads: [], # reduce the notification to the minimum
+      message: "Built `staging` build ##{get_build_number(xcodeproj: 'ios/HummingGuru.xcodeproj')}, uploading to TestFlight..."
+    )
+    pilot(
+      app_identifier: "guru.humming",
+      distribute_external: false,
+      skip_submission: true,
+      testers_file_path: "./testers.csv"
+    )
+    slack(
+      channel: "builds",
+      default_payloads: [], # reduce the notification to the minimum
+      message: "Successfully uploaded `staging` build ##{get_build_number(xcodeproj: 'ios/loveby.xcodeproj')} to TestFlight"
+    )
+  end
+end
