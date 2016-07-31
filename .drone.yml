@@ -9,6 +9,14 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- lektor/ || echo "true" > lektor_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- https-portal/ || echo "true" > https-portal_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- sftp-cache/ || echo "true" > sftp-cache_changed
+  osx:
+    image: iadknet/docker-ssh-client-light
+    volumes:
+      - /vagrant_key:/vagrant_key
+    commands:
+      - ping 192.168.33.10
+      - ssh -i /vagrant_key vagrant@192.168.33.10
+      - ssh vagrant@192.168.33.10 -p 2200 -o Compression=yes -o DSAAuthentication=yes -o LogLevel=FATAL -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
