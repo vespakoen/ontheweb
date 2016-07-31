@@ -14,7 +14,7 @@ pipeline:
     volumes:
       - /vagrant_key:/vagrant_key
     commands:
-      - ssh vagrant@127.0.0.1 -p 2200 -o Compression=yes -o DSAAuthentication=yes -o LogLevel=FATAL -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key
+      - ssh vagrant@176.9.59.53 -p 2200 -o Compression=yes -o DSAAuthentication=yes -o LogLevel=FATAL -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
