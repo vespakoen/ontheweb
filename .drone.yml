@@ -9,8 +9,20 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- lektor/ || echo "true" > lektor_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- https-portal/ || echo "true" > https-portal_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- sftp-cache/ || echo "true" > sftp-cache_changed
+  osx-connect:
+    image: docker
+    commands:
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/osx-connect -f osx-connect/Dockerfile osx-connect
+      - docker push vespakoen/osx-connect
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   osx:
-    image: iadknet/ssh-client-light
+    image: vespakoen/osx-connect
     volumes:
       - /root/.vagrant.d/insecure_private_key:/vagrant_key
     commands:
