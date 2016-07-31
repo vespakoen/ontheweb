@@ -8,7 +8,7 @@ platform :ios do
   end
 
   desc "Submits a new Beta Build to Apple TestFlight"
-  lane :testflight do
+  lane :test do
     cocoapods(
       podfile: "ios/Podfile"
     )
