@@ -12,7 +12,7 @@ platform :ios do
     cocoapods(
       podfile: "ios/Podfile"
     )
-    sh "cd .. && bash -c 'react-native bundle --dev false --platform ios --entry-file ./index.ios.js --bundle-output ./ios/main.jsbundle'"
+    sh "cd .. && bash -i -c 'react-native bundle --dev false --platform ios --entry-file ./index.ios.js --bundle-output ./ios/main.jsbundle'"
     match(
       app_identifier: "guru.humming",
       type: "appstore",
