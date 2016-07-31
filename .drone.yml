@@ -14,7 +14,6 @@ pipeline:
     volumes:
       - /vagrant_key:/vagrant_key
     commands:
-      - ping 192.168.33.10
       - ssh -i /vagrant_key vagrant@192.168.33.10
       - ssh vagrant@192.168.33.10 -p 2200 -o Compression=yes -o DSAAuthentication=yes -o LogLevel=FATAL -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key
   load-cache:
