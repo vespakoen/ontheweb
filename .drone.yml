@@ -10,7 +10,7 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- https-portal/ || echo "true" > https-portal_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- sftp-cache/ || echo "true" > sftp-cache_changed
   osx:
-    image: iadknet/docker-ssh-client-light
+    image: iadknet/ssh-client-light
     volumes:
       - /vagrant_key:/vagrant_key
     commands:
