@@ -27,8 +27,8 @@ pipeline:
       - /root/.vagrant.d/insecure_private_key:/vagrant_key
     commands:
       - export SSH_COMMAND="ssh vagrant@192.168.33.10 -p 22 -o Compression=yes -o DSAAuthentication=yes -o LogLevel=FATAL -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key"
-      - rsync -av -e "$SSH_COMMAND" hummingguru/apps/mobile/ /hummingguru
-      - ssh vagrant@192.168.33.10 -p 22 -o Compression=yes -o DSAAuthentication=yes -o LogLevel=FATAL -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key /hummingguru/ci.sh
+      - rsync -av -e "$SSH_COMMAND" hummingguru/apps/mobile/ vagrant@192.168.33.10:/hummingguru
+      - eval $SSH_COMMAND /hummingguru/ci.sh
   load-cache:
     image: plugins/sftp-cache:latest
     mount:
