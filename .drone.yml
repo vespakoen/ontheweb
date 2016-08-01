@@ -9,9 +9,13 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- lektor/ || echo "true" > lektor_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- https-portal/ || echo "true" > https-portal_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- sftp-cache/ || echo "true" > sftp-cache_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- ssh-rsync/ || echo "true" > ssh-rsync_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- tiles/ || echo "true" > tiles_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/apps/mobile/ || echo "true" > hummingguru-mobile-app_changed
   ssh-rsync:
     image: docker
     commands:
+      - cat ssh-rsync_changed || exit 0
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/ssh-rsync -f ssh-rsync/Dockerfile ssh-rsync
       - docker push vespakoen/ssh-rsync
@@ -21,11 +25,12 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-  osx:
+  hummingguru-mobile-app:
     image: vespakoen/ssh-rsync
     volumes:
       - /root/.vagrant.d/insecure_private_key:/vagrant_key
     commands:
+      - hummingguru-mobile-app_changed || exit 0
       - export SSH_COMMAND="ssh -o Compression=yes -o DSAAuthentication=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key"
       - rsync -q -avr --delete --exclude "./node_modules" -e "$SSH_COMMAND" hummingguru/apps/mobile/ vagrant@192.168.33.10:/Users/vagrant/hummingguru
       - eval $SSH_COMMAND vagrant@192.168.33.10 /Users/vagrant/hummingguru/ci.sh
@@ -108,6 +113,7 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+# VECTOR TILES
   publish-sftp-cache:
     image: docker
     commands:
@@ -121,21 +127,34 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  publish-tiles:
+    image: docker
+    commands:
+      - cat tiles_changed || exit 0
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/tiles -f tiles/Dockerfile tiles
+      - docker push vespakoen/tiles
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 # DEPLOY (now handled by docker cloud, left here as reference for others)
-  # update-server:
-  #   image: dduportal/docker-compose
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   commands:
-  #     - cd /drone/src/github.com/vespakoen/ontheweb
-  #     - bash -c "(cat dwaler_changed && docker-compose pull dwalerwww) || true"
-  #     - bash -c "(cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true"
-  #     - bash -c "(cat dwaler_changed && docker-compose stop dwalerwww) || true"
-  #     - bash -c "(cat koenschmeets_changed && docker-compose stop koenschmeetswww) || true"
-  #     - bash -c "(cat dwaler_changed && docker-compose rm -f dwalerwww) || true"
-  #     - bash -c "(cat koenschmeets_changed && docker-compose rm -f koenschmeetswww) || true"
-  #     - bash -c "(cat dwaler_changed && docker-compose up -d dwalerwww) || true"
-  #     - bash -c "(cat koenschmeets_changed && docker-compose up -d koenschmeetswww) || true"
+  update-server:
+    image: dduportal/docker-compose
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - cd /drone/src/github.com/vespakoen/ontheweb
+      - bash -c "(cat dwaler_changed && docker-compose pull dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true"
+      - bash -c "(cat dwaler_changed && docker-compose stop dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose stop koenschmeetswww) || true"
+      - bash -c "(cat dwaler_changed && docker-compose rm -f dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose rm -f koenschmeetswww) || true"
+      - bash -c "(cat dwaler_changed && docker-compose up -d dwalerwww) || true"
+      - bash -c "(cat koenschmeets_changed && docker-compose up -d koenschmeetswww) || true"
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
