@@ -21,6 +21,7 @@ https-portal:
       tiles.koenschmeets.nl -> http://tileswww:8080,
       www.dwaler.com -> http://dwalerwww,
       dwaler.com -> http://dwalerwww,
+      brouter.dwaler.com -> http://brouterwww,
       tiles.dwaler.com -> http://tileswww:8080,
       www.humming.guru -> http://hummingwww,
       humming.guru -> http://hummingwww,
@@ -99,3 +100,8 @@ tileswww:
     TILES_PATH: /planet.mbtiles
   volumes:
     - /data/tiles/planet.mbtiles:/planet.mbtiles
+
+# BROUTER
+brouterwww:
+  image: vespakoen/brouter:latest
+  restart: always
