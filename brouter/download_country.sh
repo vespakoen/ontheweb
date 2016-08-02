@@ -573,5 +573,5 @@ echo $1 consists of the following files: ${files[@]}
 mkdir -p data/segments
 
 for file in "${files[@]}"; do
-    wget http://brouter.de/brouter/segments4/${file} -O data/segments/${file}
+    wget http://brouter.de/brouter/segments4/${file} -O data/segments/${file} >/dev/null 2>&1
 done
