@@ -11,6 +11,7 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- sftp-cache/ || echo "true" > sftp-cache_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- ssh-rsync/ || echo "true" > ssh-rsync_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- tiles/ || echo "true" > tiles_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter/ || echo "true" > brouter_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/apps/mobile/ || echo "true" > hummingguru-mobile-app_changed
   ssh-rsync:
     image: docker
@@ -140,6 +141,20 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+# BROUTER
+  publish-brouter:
+    image: docker
+    commands:
+      - cat brouter_changed || exit 0
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/brouter -f brouter/Dockerfile brouter
+      - docker push vespakoen/brouter
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 # DEPLOY (now handled by docker cloud, left here as reference for others)
   update-server:
     image: dduportal/docker-compose
@@ -147,12 +162,16 @@ pipeline:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
+      # PULL
       - bash -c "(cat dwaler_changed && docker-compose pull dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true"
+      # STOP
       - bash -c "(cat dwaler_changed && docker-compose stop dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose stop koenschmeetswww) || true"
+      # RM
       - bash -c "(cat dwaler_changed && docker-compose rm -f dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose rm -f koenschmeetswww) || true"
+      # UP
       - bash -c "(cat dwaler_changed && docker-compose up -d dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose up -d koenschmeetswww) || true"
   save-cache:
