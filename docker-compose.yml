@@ -109,3 +109,4 @@ tileswww:
 # overpassapi:
 #   image: vespakoen/overpass-api:latest
 #   restart: always
+#   command: bin/init_osm3s.sh planet.osm.bz2 "db/" "./" --meta
