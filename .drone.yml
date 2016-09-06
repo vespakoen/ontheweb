@@ -11,6 +11,7 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- sftp-cache/ || echo "true" > sftp-cache_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- ssh-rsync/ || echo "true" > ssh-rsync_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- tiles/ || echo "true" > tiles_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- overpass-api/ || echo "true" > overpass-api_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter/ || echo "true" > brouter_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/apps/mobile/ || echo "true" > hummingguru-mobile-app_changed
   ssh-rsync:
@@ -135,6 +136,20 @@ pipeline:
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - docker build -t vespakoen/tiles -f tiles/Dockerfile tiles
       - docker push vespakoen/tiles
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+# OVERPASS-API
+  publish-overpass-api:
+    image: docker
+    commands:
+      - cat overpass-api_changed || exit 0
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/overpass-api -f overpass-api/Dockerfile overpass-api
+      - docker push vespakoen/overpass-api
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
       - DOCKER_PASSWORD=$$DOCKER_PASSWORD
