@@ -27,6 +27,8 @@ RUN cd /Overpass-API/src && \
   make install -j 4 
 
 RUN cd /Overpass-API && \
+  ls && \
+  ls bin && \
   ./bin/download_clone.sh --source=http://dev.overpass-api.de/api_drolbr/ --db-dir="db/" --meta=yes
 
 RUN wget -O planet.osm.bz2 "http://ftp.heanet.ie/mirrors/openstreetmap.org/planet-latest.osm.bz2"
