@@ -29,6 +29,7 @@ RUN cd /Overpass-API/src && \
 
 RUN cd /Overpass-API/src && \
   mkdir db && \
-  ./bin/download_clone.sh --source=http://dev.overpass-api.de/api_drolbr/ --db-dir="db/" --meta=yes
+  echo "Downloading data, this takes a while, hang in there..." \ &&
+  ./bin/download_clone.sh --source=http://dev.overpass-api.de/api_drolbr/ --db-dir="db/" --meta=yes > /dev/null
 
 # RUN wget -O /Overpass-API/src/db/planet.osm.bz2 "http://ftp.heanet.ie/mirrors/openstreetmap.org/planet-latest.osm.bz2"
