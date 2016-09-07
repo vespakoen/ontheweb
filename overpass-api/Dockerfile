@@ -18,7 +18,6 @@ RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
   && rm /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default \
   && rm -rf /var/lib/apt/lists/* \
   && curl -o osm-3s_v$OSM_VER.tar.gz http://dev.overpass-api.de/releases/osm-3s_v$OSM_VER.tar.gz \
-  && curl -o /planet.osm.bz2 http://mirror2.shellbot.com/osm/planet-latest.osm.bz2 \
   && bash -c " \
     curl -o -sS /planet.osm.bz2 http://mirror2.shellbot.com/osm/planet-latest.osm.bz2 & \
     pid=$! \
