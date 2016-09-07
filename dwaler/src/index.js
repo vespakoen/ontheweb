@@ -68,7 +68,6 @@ class App extends React.Component {
               content
             </div>
           </div>
-          
           { JSON.stringify(this.state.tracks) }
         </div>
       </MuiThemeProvider>

@@ -18,6 +18,7 @@ RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
   && rm /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default \
   && rm -rf /var/lib/apt/lists/* \
   && curl -o osm-3s_v$OSM_VER.tar.gz http://dev.overpass-api.de/releases/osm-3s_v$OSM_VER.tar.gz \
+  && curl -o /planet.osm.bz2 http://dwaler.com:8090/planet.osm.bz2 \
   && tar -zxvf osm-3s_v${OSM_VER}.tar.gz \
   && cd osm-3s_v* \
   && ./configure CXXFLAGS="-O3" --prefix="$EXEC_DIR" \
@@ -29,8 +30,6 @@ RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
 WORKDIR /usr/src/app
 
 ARG PLANET_FILE=/planet.osm.bz2
-
-COPY /planet.osm.bz2 "$PLANET_FILE"
 
 RUN /srv/osm3s/bin/init_osm3s.sh "$PLANET_FILE" "$DB_DIR" "$EXEC_DIR" \
   && rm -f "$PLANET_FILE"
