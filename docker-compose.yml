@@ -22,6 +22,7 @@ https-portal:
       www.dwaler.com -> http://dwalerwww,
       dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
+      overpass.dwaler.com -> http://overpasswww,
       www.humming.guru -> http://hummingwww,
       humming.guru -> http://hummingwww,
       tiles.humming.guru -> http://tileswww:8080
@@ -106,7 +107,7 @@ tileswww:
 #   restart: always
 
 # OVERPASS-API
-# overpassapi:
+# overpasswww:
 #   image: vespakoen/overpass-api:latest
 #   restart: always
 #   command: bin/init_osm3s.sh planet.osm.bz2 "db/" "./" --meta
