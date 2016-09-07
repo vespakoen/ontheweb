@@ -14,6 +14,7 @@ RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
   && apt-get install -y --force-yes --no-install-recommends \
        $build_deps \
        fcgiwrap \
+       curl \
        nginx \
   && rm /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default \
   && rm -rf /var/lib/apt/lists/* \
@@ -30,7 +31,7 @@ WORKDIR /usr/src/app
 
 ARG PLANET_FILE=planet.osm.bz2
 
-RUN curl -o planet.osm.bz2 http://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.bz2
+RUN curl -o planet.osm.bz2 http://download.geofabrik.de/europe/netherlands-latest.osm.bz2
 
 RUN /srv/osm3s/bin/init_osm3s.sh "$PLANET_FILE" "$DB_DIR" "$EXEC_DIR" \
   && rm -f "$PLANET_FILE"
