@@ -18,13 +18,7 @@ RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
   && rm /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default \
   && rm -rf /var/lib/apt/lists/* \
   && curl -o osm-3s_v$OSM_VER.tar.gz http://dev.overpass-api.de/releases/osm-3s_v$OSM_VER.tar.gz \
-  && bash -c " \
-    curl -o -sS /planet.osm.bz2 http://mirror2.shellbot.com/osm/planet-latest.osm.bz2 & \
-    pid=$! \
-    while kill -0 $pid 2> /dev/null; do \
-      echo '.' \
-      sleep 1 \
-    done" \
+  && bash -c "curl -o /planet.osm.bz2 http://mirror2.shellbot.com/osm/planet-latest.osm.bz2 & pid=$! && while kill -0 $pid 2> /dev/null; do   echo '.';   sleep 1; done" \
   && tar -zxvf osm-3s_v${OSM_VER}.tar.gz \
   && cd osm-3s_v* \
   && ./configure CXXFLAGS="-O3" --prefix="$EXEC_DIR" \
