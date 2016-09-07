@@ -1,35 +1,44 @@
-FROM ubuntu:14.04
+FROM ubuntu:trusty
 
-RUN apt-get update && apt-get install -y \
-  autoconf \ 
-  automake1.11 \
-  expat \
-  git \
-  g++ \
-  libtool \
-  libexpat1-dev \ 
-  make \
-  zlib1g-dev \
-  wget \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+# no tty
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN git clone https://github.com/drolbr/Overpass-API.git
+ARG OSM_VER=0.7.52
+ENV EXEC_DIR=/srv/osm3s
+ENV DB_DIR=/srv/osm3s/db
 
-RUN cd /Overpass-API/src && \
-  autoscan && \
-  aclocal-1.11 && \
-  autoheader && \
-  libtoolize && \
-  automake-1.11 --add-missing && \
-  autoconf && \
-  cd /Overpass-API/build && \
-  ../src/configure CXXFLAGS="-O3" --prefix=/srv && \
-  make install -j 4 
+RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
+  && set -x \
+  && echo "#!/bin/sh\nexit 0" >/usr/sbin/policy-rc.d \
+  && apt-get update \
+  && apt-get install -y --force-yes --no-install-recommends \
+       $build_deps \
+       fcgiwrap \
+       nginx \
+  && rm /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default \
+  && rm -rf /var/lib/apt/lists/* \
+  && curl -o osm-3s_v$OSM_VER.tar.gz http://dev.overpass-api.de/releases/osm-3s_v$OSM_VER.tar.gz \
+  && tar -zxvf osm-3s_v${OSM_VER}.tar.gz \
+  && cd osm-3s_v* \
+  && ./configure CXXFLAGS="-O3" --prefix="$EXEC_DIR" \
+  && make install \
+  && cd .. \
+  && rm -rf osm-3s_v* \
+  && apt-get purge -y --auto-remove $build_deps
 
-RUN cd /Overpass-API/src && \
-  mkdir db && \
-  echo "Downloading data, this takes a while, hang in there..." && \
-  nohup ./bin/download_clone.sh --source=http://dev.overpass-api.de/api_drolbr/ --db-dir="db/" --meta=yes
+WORKDIR /usr/src/app
 
-# RUN wget -O /Overpass-API/src/db/planet.osm.bz2 "http://ftp.heanet.ie/mirrors/openstreetmap.org/planet-latest.osm.bz2"
+ARG PLANET_FILE=planet.osm.bz2
+
+RUN curl -o planet.osm.bz2 http://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.bz2
+
+RUN /srv/osm3s/bin/init_osm3s.sh "$PLANET_FILE" "$DB_DIR" "$EXEC_DIR" \
+  && rm -f "$PLANET_FILE"
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY overpass /etc/init.d
+COPY docker-start /usr/local/sbin
+
+CMD ["/usr/local/sbin/docker-start"]
+
+EXPOSE 80
