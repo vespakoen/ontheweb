@@ -24,8 +24,7 @@ RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl wget" \
   && ./configure CXXFLAGS="-O3" --prefix="$EXEC_DIR" \
   && make install \
   && cd .. \
-  && rm -rf osm-3s_v* \
-  && apt-get purge -y --auto-remove $build_deps
+  && rm -rf osm-3s_v*
 
 WORKDIR /usr/src/app
 
