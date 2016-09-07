@@ -7,7 +7,7 @@ ARG OSM_VER=0.7.52
 ENV EXEC_DIR=/srv/osm3s
 ENV DB_DIR=/srv/osm3s/db
 
-RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
+RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl wget" \
   && set -x \
   && echo "#!/bin/sh\nexit 0" >/usr/sbin/policy-rc.d \
   && apt-get update \
@@ -18,7 +18,7 @@ RUN build_deps="g++ make expat libexpat1-dev zlib1g-dev curl" \
   && rm /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default \
   && rm -rf /var/lib/apt/lists/* \
   && curl -o osm-3s_v$OSM_VER.tar.gz http://dev.overpass-api.de/releases/osm-3s_v$OSM_VER.tar.gz \
-  && curl -# -o ~/planet.osm.bz2 http://mirror2.shellbot.com/osm/planet-latest.osm.bz2 \
+  && wget http://mirror2.shellbot.com/osm/planet-latest.osm.bz2 -O /planet.osm.bz2 \
   && tar -zxvf osm-3s_v${OSM_VER}.tar.gz \
   && cd osm-3s_v* \
   && ./configure CXXFLAGS="-O3" --prefix="$EXEC_DIR" \
