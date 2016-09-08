@@ -30,7 +30,7 @@ WORKDIR /usr/src/app
 
 ARG PLANET_FILE=/planet.osm.bz2
 
-RUN /srv/osm3s/bin/init_osm3s.sh "$PLANET_FILE" "$DB_DIR" "$EXEC_DIR" \
+RUN set -x && /srv/osm3s/bin/init_osm3s.sh "$PLANET_FILE" "$DB_DIR" "$EXEC_DIR" \
   && rm -f "$PLANET_FILE"
 
 COPY nginx.conf /etc/nginx/nginx.conf

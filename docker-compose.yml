@@ -22,7 +22,6 @@ https-portal:
       www.dwaler.com -> http://dwalerwww,
       dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
-      overpass.dwaler.com -> http://overpasswww,
       www.humming.guru -> http://hummingwww,
       humming.guru -> http://hummingwww,
       tiles.humming.guru -> http://tileswww:8080
@@ -64,6 +63,7 @@ koenschmeetsci-agent:
     I_UNDERSTAND_I_AM_USING_AN_UNSTABLE_VERSION: "true"
     I_AGREE_TO_FIX_BUGS_AND_NOT_FILE_BUGS: "true"
     DRONE_DEBUG: "true"
+    DRONE_TIMEOUT: "50h"
     # DRONE_PLUGIN_PULL: "false"
     DRONE_PLUGIN_PRIVILEGED: "plugins/docker,plugins/docker:*"
   links:
