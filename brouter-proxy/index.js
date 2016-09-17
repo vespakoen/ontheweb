@@ -1,6 +1,6 @@
 const http = require('http');
 
-// Create an HTTP tunneling proxy
+// Create a proxy server to brouter
 const proxy = http.createServer((req, res) => {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   const options = {
