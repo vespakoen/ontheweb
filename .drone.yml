@@ -12,7 +12,7 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- ssh-rsync/ || echo "true" > ssh-rsync_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- tiles/ || echo "true" > tiles_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- overpass-api/ || echo "true" > overpass-api_changed
-      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter/ || echo "true" > brouter_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter-proxy/ || echo "true" > brouter-proxy_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/apps/mobile/ || echo "true" > hummingguru-mobile-app_changed
   ssh-rsync:
     image: docker
@@ -157,13 +157,13 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 # BROUTER
-  publish-brouter:
+  publish-brouter-proxy:
     image: docker
     commands:
-      - cat brouter_changed || exit 0
+      - cat brouter-proxy_changed || exit 0
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-      - docker build -t vespakoen/brouter -f brouter/Dockerfile brouter
-      - docker push vespakoen/brouter
+      - docker build -t vespakoen/brouter-proxy -f brouter-proxy/Dockerfile brouter-proxy
+      - docker push vespakoen/brouter-proxy
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
       - DOCKER_PASSWORD=$$DOCKER_PASSWORD

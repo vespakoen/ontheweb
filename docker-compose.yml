@@ -22,6 +22,7 @@ https-portal:
       www.dwaler.com -> http://dwalerwww,
       dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
+      brouter.dwaler.com -> http://brouterwww,
       www.humming.guru -> http://hummingwww,
       humming.guru -> http://hummingwww,
       tiles.humming.guru -> http://tileswww:8080
@@ -101,10 +102,10 @@ tileswww:
   volumes:
     - /data/tiles/planet.mbtiles:/planet.mbtiles
 
-# BROUTER
-# brouterwww:
-#   image: vespakoen/brouter:latest
-#   restart: always
+# BROUTER PROXY
+brouterwww:
+  image: vespakoen/brouter-proxy:latest
+  restart: always
 
 # OVERPASS-API
 # overpasswww:
