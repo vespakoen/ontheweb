@@ -19,15 +19,16 @@ https-portal:
       www.koenschmeets.nl -> http://koenschmeetswww,
       ci.koenschmeets.nl -> http://koenschmeetsci:8000,
       tiles.koenschmeets.nl -> http://tileswww:8080,
-      www.dwaler.com -> http://dwalerwww,
       dwaler.com -> http://dwalerwww,
+      www.dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
-      brouter.dwaler.com -> http://brouterwww,
-      www.humming.guru -> http://hummingwww,
+      brouter.dwaler.com -> http://brouterwww:8080,
       humming.guru -> http://hummingwww,
+      www.humming.guru -> http://hummingwww,
       tiles.humming.guru -> http://tileswww:8080
     STAGE: production
     WEBSOCKET: "true"
+    RESOLVER: 127.0.0.11 valid=60s
 
 # KOENSCHMEETS
 koenschmeetswww:

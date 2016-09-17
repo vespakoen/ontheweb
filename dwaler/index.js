@@ -17,4 +17,4 @@ app.get(config.TOP_TRACKS_URL, (req, res) => {
 })
 
 app.listen(process.env.DWALER_PORT, () => 
-  console.log(`Example app listening on port ${process.env.DWALER_PORT}!`))
+  console.log(`dwaler listening on port ${process.env.DWALER_PORT}!`))
