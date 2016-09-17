@@ -1,13 +1,13 @@
 {
   "name": "brouter-proxy",
   "version": "1.0.0",
-  "description": "",
+  "description": "Proxy to brouter (to provide https support)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Koen Schmeets",
+  "license": "MIT",
   "dependencies": {}
 }
