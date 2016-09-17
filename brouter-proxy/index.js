@@ -17,5 +17,5 @@ const proxy = http.createServer((req, res) => {
 
 // now that proxy is running
 proxy.listen(process.env.BROUTER_PROXY_PORT, () => {
-	console.log('brouter proxy listening on port 8080')
+	console.log(`brouter proxy listening on port ${process.env.BROUTER_PROXY_PORT}`)
 });
