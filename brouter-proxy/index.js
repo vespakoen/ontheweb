@@ -2,7 +2,6 @@ const http = require('http');
 
 // Create a proxy server to brouter
 const proxy = http.createServer((req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
   const options = {
     hostname: 'h2096617.stratoserver.net',
     port: 80,
@@ -12,7 +11,9 @@ const proxy = http.createServer((req, res) => {
       'Content-Type': 'application/json'
     }
   };
-  http.request(options).pipe(res)
+  http.request(options, (r) => {
+  	r.pipe(res)
+  })
 });
 
 // now that proxy is running
