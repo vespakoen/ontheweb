@@ -7,6 +7,7 @@ WORKDIR /code
 
 COPY ./package.json /code/
 RUN npm install --production
+RUN apk add --no-cache curl
 COPY . /code
 
 CMD [ "npm", "start" ]
