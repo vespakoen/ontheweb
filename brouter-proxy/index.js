@@ -11,15 +11,18 @@ const proxy = http.createServer((req, res) => {
       'Content-Type': 'application/json'
     }
   };
-  http.request(options, (r) => {
-    res.setEncoding('utf8')
+  http.request(options, (preq) => {
+    preq.setEncoding('utf8')
     body = ''
-    res.on('data', (chunk) => {
+    preq.on('data', (chunk) => {
       body += chunk
     });
-    res.on('end', () => {
+    preq.on('end', () => {
       res.writeHead(200, {'Content-Type': 'application/json'});
-      res.send(body)
+      res.end(body)
+    });
+    preq.on('error', (e) => {
+      console.log(`problem with request: ${e.message}`);
     });
   })
 });
