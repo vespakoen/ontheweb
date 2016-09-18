@@ -12,7 +12,15 @@ const proxy = http.createServer((req, res) => {
     }
   };
   http.request(options, (r) => {
-  	r.pipe(res)
+    res.setEncoding('utf8')
+    body = ''
+    res.on('data', (chunk) => {
+      body += chunk
+    });
+    res.on('end', () => {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.send(body)
+    });
   })
 });
 
