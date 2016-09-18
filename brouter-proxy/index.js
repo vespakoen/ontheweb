@@ -5,7 +5,7 @@ const proxy = http.createServer((req, res) => {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   const options = {
     hostname: 'h2096617.stratoserver.net',
-    port: 443,
+    port: 80,
     path: '/brouter?' + req.url.split('?')[1],
     method: 'GET',
     headers: {
