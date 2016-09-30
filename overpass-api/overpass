@@ -13,12 +13,14 @@ DB_DIR=/srv/osm3s/db
 EXEC_DIR=/srv/osm3s
 
 LOG_DIR=/var/log/overpass
-RUN_AS_USER=root
+RUN_AS_USER=overpass
 
 mkdir $LOG_DIR 2>/dev/null
 
-DISPATCHER_PID_FILE=/var/run/dispatcher.pid
-DISPATCHER_OPTIONS="--osm-base --db-dir=$DB_DIR"
+DISPATCHER_BASE_PID_FILE=/var/run/dispatcher_base.pid
+DISPATCHER_AREA_PID_FILE=/var/run/dispatcher_area.pid
+DISPATCHER_BASE_OPTIONS="--osm-base --meta --db-dir=$DB_DIR"
+DISPATCHER_AREA_OPTIONS="--areas --db-dir=$DB_DIR"
 DISPATCHER=$EXEC_DIR/bin/dispatcher
 
 test -x $DISPATCHER || exit 0
@@ -27,15 +29,18 @@ test -x $DISPATCHER || exit 0
 case "$1" in
   start)
     log_daemon_msg "Starting Overpass dispatcher daemon" "dispatcher"
-    if test -f $DISPATCHER_PID_FILE; then
+    if test -f $DISPATCHER_BASE_PID_FILE || test -f $DISPATCHER_AREA_PID_FILE ; then
       echo "dispatcher already running?"
       exit 1
     fi
     rm $DB_DIR/osm3s* 2>/dev/null
     rm /dev/shm/osm3s* 2>/dev/null
-    if start-stop-daemon --start --quiet -b --oknodo --make-pidfile -c $RUN_AS_USER --pidfile $DISPATCHER_PID_FILE --exec $DISPATCHER -- $DISPATCHER_OPTIONS >> $LOG_DIR/dispatcher.log 2>&1; then
-      mkdir /tmp/translate_xapi 2>/dev/null
-      chmod 777 /tmp/translate_xapi
+    if start-stop-daemon --start --quiet -b --oknodo --make-pidfile -c $RUN_AS_USER --pidfile $DISPATCHER_BASE_PID_FILE --exec $DISPATCHER -- $DISPATCHER_BASE_OPTIONS >> $LOG_DIR/dispatcher_base.log 2>&1; then
+      log_end_msg 0
+    else
+      log_end_msg 1
+    fi 
+    if start-stop-daemon --start --quiet -b --oknodo --make-pidfile -c $RUN_AS_USER --pidfile $DISPATCHER_AREA_PID_FILE --exec $DISPATCHER -- $DISPATCHER_AREA_OPTIONS >> $LOG_DIR/dispatcher_area.log 2>&1; then
       log_end_msg 0
     else
       log_end_msg 1
@@ -44,18 +49,27 @@ case "$1" in
 
   stop)
     log_daemon_msg "Stopping Overpass dispatcher daemon" "dispatcher"
-    if start-stop-daemon --stop --quiet --oknodo --pidfile $DISPATCHER_PID_FILE; then
+    if start-stop-daemon --stop --quiet --oknodo --pidfile $DISPATCHER_BASE_PID_FILE; then
       log_end_msg 0
-      rm $DB_DIR/osm3s* 2>/dev/null
-      rm /dev/shm/osm3s* 2>/dev/null
-      rm -f $DISPATCHER_PID_FILE
+      rm $DB_DIR/osm3s*base* 2>/dev/null
+      rm /dev/shm/osm3s*base* 2>/dev/null
+      rm -f $DISPATCHER_BASE_PID_FILE
+    else
+      log_end_msg 1
+    fi
+    if start-stop-daemon --stop --quiet --oknodo --pidfile $DISPATCHER_AREA_PID_FILE; then
+      log_end_msg 0
+      rm $DB_DIR/osm3s*area* 2>/dev/null
+      rm /dev/shm/osm3s*area* 2>/dev/null
+      rm -f $DISPATCHER_AREA_PID_FILE
     else
       log_end_msg 1
     fi
     ;;
 
   status)
-    status_of_proc -p $DISPATCHER_PID_FILE "" "overpass dispatcher"
+    status_of_proc -p $DISPATCHER_BASE_PID_FILE "" "overpass dispatcher base"
+    status_of_proc -p $DISPATCHER_BASE_PID_FILE "" "overpass dispatcher areas"
     ;;
 
   *)

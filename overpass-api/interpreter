@@ -1,0 +1,60 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:             interpreter
+# Required-Start:       $remote_fs $syslog
+# Required-Stop:        $remote_fs $syslog
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Overpass API fastcgi interpreter daemon
+### END INIT INFO
+
+
+spawnfcgi="/usr/bin/spawn-fcgi"
+directory="/srv/osm3s/cgi-bin/"
+interpreter_cgi="/srv/osm3s/cgi-bin/interpreter"
+prog=$(basename $interpreter_cgi)
+socket=/var/run/interpreter.socket
+server_user=www-data
+server_group=www-data
+server_childs=5
+username=overpass
+pidfile="/var/run/interpreter_cgi.pid"
+
+
+test -x $interpreter_cgi || exit 0
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting Overpass interpreter fastcgi daemon" "interpreter"
+    if test -f $pidfile ; then
+      echo "interpreter already running?"
+      exit 1
+    fi
+
+    $spawnfcgi -d ${directory} -s ${socket} -u ${server_user} -g ${server_group} -P ${pidfile} -F ${server_childs} -f ${interpreter_cgi}
+    ;;
+
+  stop)
+    log_daemon_msg "Stopping Overpass dispatcher daemon" "interpreter"
+    if start-stop-daemon --stop --quiet --oknodo --pidfile $pidfile; then
+      log_end_msg 0
+      rm -f $pidfile
+    else
+      log_end_msg 1
+    fi
+
+    ;;
+
+  status)
+    status_of_proc -p $pidfile "" "overpass interpreter"
+    ;;
+
+  *)
+    log_action_msg "Usage: /etc/init.d/overpass {start|stop|status}"
+    exit 1
+esac
+
+exit 0
+

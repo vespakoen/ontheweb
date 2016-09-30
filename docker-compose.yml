@@ -12,6 +12,7 @@ https-portal:
     - hummingwww
     - tileswww
     - brouterwww
+    - overpasswww
   volumes:
     - /data/ssl_certs:/var/lib/https-portal
   environment:
@@ -23,6 +24,7 @@ https-portal:
       dwaler.com -> http://dwalerwww,
       www.dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
+      overpass.dwaler.com -> http://overpasswww,
       brouter.dwaler.com -> http://brouterwww,
       humming.guru -> http://hummingwww,
       www.humming.guru -> http://hummingwww,
@@ -112,7 +114,6 @@ brouterwww:
     BROUTER_PROXY_PORT: 80
 
 # OVERPASS-API
-# overpasswww:
-#   image: vespakoen/overpass-api:latest
-#   restart: always
-#   command: bin/init_osm3s.sh planet.osm.bz2 "db/" "./" --meta
+overpasswww:
+  image: vespakoen/overpass-api:latest
+  restart: always

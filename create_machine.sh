@@ -17,6 +17,6 @@
 
 docker-machine --debug create \
   --driver generic \
-  --generic-ip-address 176.9.59.53 \
+  --generic-ip-address 148.251.12.99 \
   --generic-ssh-key ~/.ssh/id_rsa \
   $MACHINE_NAME
