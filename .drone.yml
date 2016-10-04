@@ -195,19 +195,15 @@ pipeline:
       # PULL
       - bash -c "(cat dwaler_changed && docker-compose pull dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true"
-      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose pull import-sql) || true"
       # STOP
       - bash -c "(cat dwaler_changed && docker-compose stop dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose stop koenschmeetswww) || true"
-      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose stop import-sql) || true"
       # RM
       - bash -c "(cat dwaler_changed && docker-compose rm -f dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose rm -f koenschmeetswww) || true"
-      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose rm -f import-sql) || true"
       # UP
       - bash -c "(cat dwaler_changed && docker-compose up -d dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose up -d koenschmeetswww) || true"
-      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose up -d import-sql) || true"
   save-cache:
     image: plugins/sftp-cache:latest
     mount:

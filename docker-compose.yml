@@ -293,9 +293,9 @@ import-sql:
 #     - ./osm2vectortiles.tm2source:/data/tm2source
 #   links:
 #     - postgis:db
-# mapping-qa-report:
-#   image: "osm2vectortiles/mapping-qa-report"
-#   links:
-#     - postgis:db
-#   volumes:
-#     - ./export:/data
+mapping-qa-report:
+  image: "osm2vectortiles/mapping-qa-report"
+  links:
+    - postgis:db
+  volumes:
+    - /data/osm2vectortiles/export:/data
