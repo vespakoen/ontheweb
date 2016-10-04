@@ -1,0 +1,81 @@
+system:
+  name: landuse
+  classes:
+    aboriginal_lands:
+    - aboriginal_lands
+    agriculture:
+    - orchard
+    - farm
+    - farmland
+    - farmyard
+    - allotments
+    - vineyard
+    - plant_nursery
+    cemetery:
+    - cemetery
+    - christian
+    - jewish
+    glacier:
+    - glacier
+    grass:
+    - grass
+    - grassland
+    - meadow
+    - heath
+    - fell
+    hospital:
+    - hospital
+    industrial:
+    - industrial
+    park:
+    - park
+    - dog_park
+    - common
+    - garden
+    - golf_course
+    - playground
+    - recreation_ground
+    - village_green
+    - zoo
+    - sports_centre
+    - camp_site
+    pitch:
+    - athletics
+    - chess
+    - pitch
+    - track
+    rock:
+    - rock
+    - bare_rock
+    - scree
+    - quarry
+    sand:
+    - sand
+    - beach
+    school:
+    - school
+    - college
+    - university
+    scrub:
+    - scrub
+    wood:
+    - wood
+    - forest
+    residential:
+    - residential
+    commercial:
+    - commercial
+    retail:
+    - retail
+    military:
+    - military
+    railway:
+    - railway
+    greenfield:
+    - greenfield
+    landfill:
+    - landfill
+    salt_pond:
+    - salt_pond
+    winter_sports:
+    - winter_sports

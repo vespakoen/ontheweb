@@ -14,6 +14,7 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- overpass-api/ || echo "true" > overpass-api_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter-proxy/ || echo "true" > brouter-proxy_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/apps/mobile/ || echo "true" > hummingguru-mobile-app_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- osm2vectortiles-import-sql || echo "true" > osm2vectortiles-import-sql_changed
   ssh-rsync:
     image: docker
     commands:
@@ -170,6 +171,20 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+# OSM2VECTORTILES IMPORT SQL simplify branch
+  publish-osm2vectortiles-import-sql:
+    image: docker
+    commands:
+      - cat osm2vectortiles-import-sql_changed || exit 0
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/osm2vectortiles-import-sql:simplify -f osm2vectortiles-import-sql/Dockerfile osm2vectortiles-import-sql
+      - docker push vespakoen/osm2vectortiles-import-sql:simplify
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 # DEPLOY (now handled by docker cloud, left here as reference for others)
   update-server:
     image: dduportal/docker-compose
@@ -180,15 +195,19 @@ pipeline:
       # PULL
       - bash -c "(cat dwaler_changed && docker-compose pull dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true"
+      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose pull import-sql) || true"
       # STOP
       - bash -c "(cat dwaler_changed && docker-compose stop dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose stop koenschmeetswww) || true"
+      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose stop import-sql) || true"
       # RM
       - bash -c "(cat dwaler_changed && docker-compose rm -f dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose rm -f koenschmeetswww) || true"
+      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose rm -f import-sql) || true"
       # UP
       - bash -c "(cat dwaler_changed && docker-compose up -d dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose up -d koenschmeetswww) || true"
+      - bash -c "(cat osm2vectortiles-import-sql_changed && docker-compose up -d import-sql) || true"
   save-cache:
     image: plugins/sftp-cache:latest
     mount:
