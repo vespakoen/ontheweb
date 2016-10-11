@@ -14,7 +14,7 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- overpass-api/ || echo "true" > overpass-api_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter-proxy/ || echo "true" > brouter-proxy_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/apps/mobile/ || echo "true" > hummingguru-mobile-app_changed
-      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- osm2vectortiles-import-sql || echo "true" > osm2vectortiles-import-sql_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- motepair || echo "true" > motepair_changed
   ssh-rsync:
     image: docker
     commands:
@@ -171,14 +171,14 @@ pipeline:
       - DOCKER_EMAIL=$$DOCKER_EMAIL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-# OSM2VECTORTILES IMPORT SQL simplify branch
-  publish-osm2vectortiles-import-sql:
+# MOTEPAIR
+  publish-motepair:
     image: docker
     commands:
-      - cat osm2vectortiles-import-sql_changed || exit 0
+      - cat motepair_changed || exit 0
       - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-      - docker build -t vespakoen/osm2vectortiles-import-sql:simplify -f osm2vectortiles-import-sql/Dockerfile osm2vectortiles-import-sql
-      - docker push vespakoen/osm2vectortiles-import-sql:simplify
+      - docker build -t vespakoen/motepair -f motepair/Dockerfile motepair
+      - docker push vespakoen/motepair
     environment:
       - DOCKER_USERNAME=$$DOCKER_USERNAME
       - DOCKER_PASSWORD=$$DOCKER_PASSWORD
@@ -190,28 +190,10 @@ pipeline:
     image: dduportal/docker-compose
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /data/osm2vectortiles/export:/data/export
-      - ./osm2vectortiles.tm2source/:/tmp/project
     commands:
       - cd /drone/src/github.com/vespakoen/ontheweb
       # PULL
-      - >
-        bash -c "
-        if [ -f osm2vectortiles-import-sql_changed ];
-        then
-          docker-compose pull import-sql &&
-          docker-compose stop import-sql &&
-          docker-compose rm -f import-sql &&
-          docker-compose up -d import-postgis &&
-          docker-compose up import-external &&
-          docker-compose up import-osm &&
-          docker-compose up import-sql &&
-          docker-compose run -e BBOX="5.2294921875,46.7699684336,15.6005859375,55.3041377374"
-            -e MIN_ZOOM="8"
-            -e MAX_ZOOM="14"
-            export &&
-          docker-compose up export
-        fi"
+      - bash -c "(cat dwaler_changed && docker-compose pull dwalerwww) || true"
       - bash -c "(cat koenschmeets_changed && docker-compose pull koenschmeetswww) || true"
       # STOP
       - bash -c "(cat dwaler_changed && docker-compose stop dwalerwww) || true"

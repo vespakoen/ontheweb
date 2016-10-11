@@ -1,0 +1,3 @@
+[submodule "motepair"]
+	path = motepair
+	url = git://github.com/motepair/motepair-server.git
