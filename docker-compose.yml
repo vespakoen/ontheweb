@@ -11,9 +11,10 @@ https-portal:
     - dwalerwww
     - hummingwww
     - tileswww
-    - brouter
     - overpasswww
     - motepair
+    - livesmoking
+    - signal-server
   volumes:
     - /data/ssl_certs:/var/lib/https-portal
   environment:
@@ -23,11 +24,12 @@ https-portal:
       ci.koenschmeets.nl -> http://koenschmeetsci:8000,
       tiles.koenschmeets.nl -> http://tileswww:8080,
       motepair.koenschmeets.nl -> http://motepair:3000,
+      livesmoking.koenschmeets.nl -> http://livesmoking:8080,
+      signalhub.koenschmeets.nl -> http://signal-server:3001,
       dwaler.com -> http://dwalerwww,
       www.dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
       overpass.dwaler.com -> http://overpasswww,
-      brouter.dwaler.com -> http://brouter:17777,
       humming.guru -> http://hummingwww,
       www.humming.guru -> http://hummingwww,
       tiles.humming.guru -> http://tileswww:8080
@@ -108,11 +110,6 @@ tileswww:
   volumes:
     - /data/tiles:/data
 
-# BROUTER
-brouter:
-  image: vespakoen/brouter:latest
-  restart: always
-
 # BROUTER PROXY
 brouterwww:
   image: vespakoen/brouter-proxy:latest
@@ -131,3 +128,18 @@ overpasswww:
 # MOTEPAIR
 motepair:
   image: vespakoen/motepair:latest
+
+livesmoking:
+  image: vespakoen/livesmoking:latest
+
+coturn:
+  image: bprodoehl/turnserver
+  restart: always
+  net: host
+  restart: on-failure:10
+  ports:
+    - "3478:3478"
+    - "3478:3478/udp"
+
+signal-server:
+  image: vespakoen/signal-server:latest
