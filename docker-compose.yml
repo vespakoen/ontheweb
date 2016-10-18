@@ -143,3 +143,5 @@ coturn:
 
 signal-server:
   image: vespakoen/signal-server:latest
+  ports:
+    - 3001:3001
