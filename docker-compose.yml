@@ -11,7 +11,7 @@ https-portal:
     - dwalerwww
     - hummingwww
     - tileswww
-    - brouterwww
+    - brouter
     - overpasswww
     - motepair
   volumes:
@@ -27,7 +27,7 @@ https-portal:
       www.dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
       overpass.dwaler.com -> http://overpasswww,
-      brouter.dwaler.com -> http://brouterwww,
+      brouter.dwaler.com -> http://brouter:17777,
       humming.guru -> http://hummingwww,
       www.humming.guru -> http://hummingwww,
       tiles.humming.guru -> http://tileswww:8080
@@ -107,6 +107,11 @@ tileswww:
     TILES_PATH: /data/planet.mbtiles
   volumes:
     - /data/tiles:/data
+
+# BROUTER
+brouter:
+  image: vespakoen/brouter:latest
+  restart: always
 
 # BROUTER PROXY
 brouterwww:
