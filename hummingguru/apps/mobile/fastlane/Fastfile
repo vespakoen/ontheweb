@@ -41,7 +41,7 @@ platform :ios do
     slack(
       channel: "builds",
       default_payloads: [], # reduce the notification to the minimum
-      message: "Successfully uploaded `staging` build ##{get_build_number(xcodeproj: 'ios/loveby.xcodeproj')} to TestFlight"
+      message: "Successfully uploaded `staging` build ##{get_build_number(xcodeproj: 'ios/HummingGuru.xcodeproj')} to TestFlight"
     )
   end
 end

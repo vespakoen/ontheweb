@@ -1,6 +1,6 @@
 # SSL
 https-portal:
-  image: steveltn/https-portal
+  image: vespakoen/https-portal
   restart: always
   ports:
     - 80:80
@@ -30,9 +30,8 @@ https-portal:
       www.dwaler.com -> http://dwalerwww,
       tiles.dwaler.com -> http://tileswww:8080,
       overpass.dwaler.com -> http://overpasswww,
-      humming.guru -> http://hummingwww,
-      www.humming.guru -> http://hummingwww,
-      tiles.humming.guru -> http://tileswww:8080
+      humming.guru -> http://hummingwww:8080,
+      www.humming.guru -> http://hummingwww:8080
     STAGE: production
     WEBSOCKET: "true"
     RESOLVER: 127.0.0.11 valid=60s
@@ -98,7 +97,7 @@ dwalerwww:
 
 # HUMMINGGURU
 hummingwww:
-  image: tutum/hello-world
+  image: vespakoen/hummingguru
   restart: always
 
 # VECTOR TILES
@@ -129,8 +128,13 @@ overpasswww:
 motepair:
   image: vespakoen/motepair:latest
 
+signal-server:
+  image: vespakoen/signal-server:latest
+
 livesmoking:
   image: vespakoen/livesmoking:latest
+  links:
+    - signal-server
 
 coturn:
   image: bprodoehl/turnserver
@@ -140,8 +144,3 @@ coturn:
   ports:
     - "3478:3478"
     - "3478:3478/udp"
-
-signal-server:
-  image: vespakoen/signal-server:latest
-  ports:
-    - 3001:3001
