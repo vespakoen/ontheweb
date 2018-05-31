@@ -3,3 +3,4 @@ koenschmeets/public/
 env.sh
 .tern-port
 npm-debug.log
+.DS_Store

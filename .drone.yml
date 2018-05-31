@@ -13,7 +13,8 @@ pipeline:
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- tiles/ || echo "true" > tiles_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- overpass-api/ || echo "true" > overpass-api_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter-proxy/ || echo "true" > brouter-proxy_changed
-      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/apps/mobile/ || echo "true" > hummingguru-mobile-app_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/mobile/ || echo "true" > hummingguru-mobile-changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- hummingguru/server/ || echo "true" > hummingguru-server-changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- motepair || echo "true" > motepair_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- brouter || echo "true" > brouter_changed
   ssh-rsync:
@@ -34,10 +35,25 @@ pipeline:
     volumes:
       - /root/.vagrant.d/insecure_private_key:/vagrant_key
     commands:
-      - hummingguru-mobile-app_changed || exit 0
+      - cat hummingguru-mobile-changed || exit 0
       - export SSH_COMMAND="ssh -o Compression=yes -o DSAAuthentication=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i /vagrant_key"
       - rsync -q -avr --delete --exclude "./node_modules" -e "$SSH_COMMAND" hummingguru/apps/mobile/ vagrant@192.168.33.10:/Users/vagrant/hummingguru
       - eval $SSH_COMMAND vagrant@192.168.33.10 /Users/vagrant/hummingguru/ci.sh
+  hummingguru-server:
+    image: docker
+    volumes:
+      - /root/.vagrant.d/insecure_private_key:/vagrant_key
+    commands:
+      - cat hummingguru-server-changed || exit 0
+      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - docker build -t vespakoen/hummingguru -f hummingguru/server/Dockerfile hummingguru/server
+      - docker push vespakoen/hummingguru
+    environment:
+      - DOCKER_USERNAME=$$DOCKER_USERNAME
+      - DOCKER_PASSWORD=$$DOCKER_PASSWORD
+      - DOCKER_EMAIL=$$DOCKER_EMAIL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   load-cache:
     image: plugins/sftp-cache:latest
     mount:

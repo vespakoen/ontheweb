@@ -3,6 +3,6 @@
 . ./env.sh
 docker-compose pull
 docker-compose stop
-docker-compose rm
+docker-compose rm -f
 docker-compose up -d --remove-orphans
 docker-compose logs -f

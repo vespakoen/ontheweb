@@ -10,11 +10,8 @@ https-portal:
     - koenschmeetsci
     - dwalerwww
     - hummingwww
-    - motepair
-    - livesmoking
     - signal-server
     - vespavibes
-    - midas-admin
   volumes:
     - /data/ssl_certs:/var/lib/https-portal
   environment:
@@ -22,10 +19,7 @@ https-portal:
       koenschmeets.nl -> http://koenschmeetswww,
       www.koenschmeets.nl -> http://koenschmeetswww,
       ci.koenschmeets.nl -> http://koenschmeetsci:8000,
-      motepair.koenschmeets.nl -> http://motepair:3000,
-      livesmoking.koenschmeets.nl -> http://livesmoking:8080,
       signalhub.koenschmeets.nl -> http://signal-server:3001,
-      midas.koenschmeets.nl -> http://midas-admin:8080,
       dwaler.com -> http://dwalerwww,
       www.dwaler.com -> http://dwalerwww,
       humming.guru -> http://hummingwww:8080,
@@ -64,7 +58,7 @@ koenschmeetsci-agent:
   environment:
     DRONE_SERVER: ws://koenschmeetsci:8000/ws/broker
     DRONE_SECRET: $DRONE_AGENT_SECRET
-    DRONE_TOKEN: $DRONE_USER_TOKEN
+    # DRONE_TOKEN: $DRONE_USER_TOKEN
     DRONE_PLUGIN_NETRC: "true"
     I_UNDERSTAND_I_AM_USING_AN_UNSTABLE_VERSION: "true"
     I_AGREE_TO_FIX_BUGS_AND_NOT_FILE_BUGS: "true"
@@ -122,18 +116,8 @@ hummingwww:
 #     EXEC_DIR: /srv/osm3s
 #     DB_DIR: /srv/osm3s/db
 
-# MOTEPAIR
-motepair:
-  image: vespakoen/motepair:latest
-  ports:
-    - "3000:3000"
 signal-server:
   image: vespakoen/signal-server:latest
-
-livesmoking:
-  image: vespakoen/livesmoking:latest
-  links:
-    - signal-server
 
 coturn:
   image: bprodoehl/turnserver
@@ -147,9 +131,3 @@ coturn:
 vespavibes:
   image: vespakoen/vespavibes
   restart: always
-
-midas-admin:
-  image: vespakoen/midas-admin
-  restart: always
-  environment:
-    SERVER_PORT: "8080"
