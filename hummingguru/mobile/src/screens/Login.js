@@ -12,45 +12,14 @@ import {
 
 import { connect } from 'react-redux'
 import { actions } from '../redux/login'
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ddd',
-  },
-  spacer: {
-    flex: 1
-  },
-  login: {
-    backgroundColor: '#2b608a',
-    alignItems: 'center',
-    padding: 20
-  },
-  loginText: {
-    fontSize: 20,
-    color: '#fff'
-  },
-  intro: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingLeft: 30,
-    paddingRight: 30
-  },
-  introText: {
-    fontSize: 24,
-    lineHeight: 36,
-    color: '#888',
-    textAlign: 'center'
-  }
-})
+import { loginStyle as styles } from '../style'
 
 class Login extends Component {
   renderFetchingProfile() {
     return (
       <View style={styles.intro}>
         <Text style={styles.introText}>
-          Loading Facebook profile...
+          Loading profile...
         </Text>
       </View>
     )
@@ -60,20 +29,58 @@ class Login extends Component {
     return (
       <View style={styles.intro}>
         <Text style={styles.introText}>
-          Loading user information...
+          Loading profile...
         </Text>
       </View>
     )
   }
 
-  renderLoginButtons() {
+  renderIsLoggingIn() {
+    return (
+      <View style={styles.intro}>
+        <Text style={styles.introText}>
+          Logging in...
+        </Text>
+      </View>
+    )
+  }
+
+  renderError() {
     const login = this.props.login
     return (
-      <View style={styles.spacer}>
+      <View style={styles.intro}>
+        <Text style={styles.introText}>
+          Oops, something went wrong with connecting the guru's, please try again in a bit...
+        </Text>
         <View style={styles.spacer} />
         <TouchableOpacity
           onPress={login}
           style={styles.login}
+        >
+          <Text style={styles.loginText}>
+            Retry
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderLoginButtons() {
+    const { facebookLogin, guestLogin } = this.props
+    return (
+      <View style={styles.spacer}>
+        <View style={styles.spacer} />
+        <TouchableOpacity
+          onPress={guestLogin}
+          style={styles.guestLogin}
+        >
+          <Text style={styles.loginText}>
+            Login as Guest
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={facebookLogin}
+          style={styles.facebookLogin}
         >
           <Text style={styles.loginText}>
             Login with Facebook
@@ -84,7 +91,10 @@ class Login extends Component {
   }
 
   renderContent() {
-    const { isLoggedIn, isLoggingIn, isFetchingProfile, isFetchingUser } = this.props
+    const { isLoggedIn, isLoggingIn, isFetchingProfile, isFetchingUser, error } = this.props
+    if (error) {
+      return this.renderError()
+    }
     if (isLoggedIn) {
       if (isFetchingProfile) {
         return this.renderFetchingProfile()
@@ -92,11 +102,9 @@ class Login extends Component {
         return this.renderFetchingUser()
       }
     } else if (isLoggingIn) {
-      return null
-    } else {
-      return this.renderLoginButtons()
+      return this.renderIsLoggingIn()
     }
-    return null
+    return this.renderLoginButtons()
   }
 
   render() {

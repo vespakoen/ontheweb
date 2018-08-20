@@ -1,80 +1,122 @@
 import React from 'react'
-
 import {
   StyleSheet,
   StatusBar,
-  Text,
-  View
+  View,
+  Platform
 } from 'react-native'
-
 import { connect } from 'react-redux'
-import Login from './Login'
-import Recorder from './Recorder'
-import HelpOthers from './HelpOthers'
-import Profile from './Profile'
-import Requests from './Requests'
-import TabBar from './TabBar'
+import {
+  createDrawerNavigator,
+  createBottomTabNavigator
+} from 'react-navigation'
+import { COLOR, ThemeProvider } from 'react-native-material-ui';
+import Notifications from 'react-native-notifications'
+import SideMenu from './SideMenu'
+import Login from '../screens/Login'
+import Recorder from '../screens/Recorder'
+import HelpOthers from '../screens/HelpOthers'
+import Profile from '../screens/Profile'
+import Requests from '../screens/Requests'
 import { actions } from '../redux/navigation'
+import TabsMenu from './TabsMenu'
+
+const screens = {
+  HelpOthers: {
+    screen: HelpOthers
+  },
+  Recorder: {
+    screen: Recorder
+  },
+  Requests: {
+    screen: Requests
+  },
+  Profile: {
+    screen: Profile
+  }
+}
+
+const Screen = Platform.OS === 'ios'
+  ? createBottomTabNavigator(screens, {
+    tabBarComponent: TabsMenu
+  })
+  : createDrawerNavigator(screens, {
+    contentComponent: SideMenu
+  })
+
+const uiTheme = {
+  palette: {
+    primaryColor: '#252830',
+  },
+  toolbar: {
+    container: {
+      height: 50,
+    },
+    leftElement: {
+      color: '#fff'
+    },
+    titleText: {
+      color: '#fff'
+    }
+  },
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ddd'
-  },
-  header: {
-    height: 70,
-    paddingTop: 18,
-    backgroundColor: '#ffe000',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  headerTitle: {
-    color: '#000',
-    fontSize: 20
+    backgroundColor: '#252830'
   }
 })
 
-const pageToComponentMap = {
-  login: Login,
-  recorder: Recorder,
-  helpOthers: HelpOthers,
-  profile: Profile,
-  requests: Requests
-}
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+		Notifications.addEventListener('remoteNotificationsRegistered', this.onPushRegistered.bind(this))
+		Notifications.addEventListener('remoteNotificationsRegistrationFailed', this.onPushRegistrationFailed.bind(this))
+		Notifications.requestPermissions()
+	}
+	
+	onPushRegistered(deviceToken) {
+	    // TODO: Send the token to my server so it could send back push notifications...
+		console.log("Device Token Received", deviceToken)
+	}
 
-const pageToTitleMap = {
-  recorder: 'Get Help',
-  helpOthers: 'Help Others',
-  profile: 'Profile',
-  requests: 'Requests'
-}
-
-const App = ({ page }) => {
-  if (page === 'login') {
-    return <Login />
+	onPushRegistrationFailed(error) {
+		// For example:
+		//
+		// error={
+		//   domain: 'NSCocoaErroDomain',
+		//   code: 3010,
+		//   localizedDescription: 'remote notifications are not supported in the simulator'
+		// }
+		// console.error(error)
+	}
+	
+	componentWillUnmount() {
+  	// prevent memory leaks!
+  	Notifications.removeEventListener('remoteNotificationsRegistered', this.onPushRegistered.bind(this))
+		Notifications.removeEventListener('remoteNotificationsRegistrationFailed', this.onPushRegistrationFailed.bind(this))
   }
-  const Scene = pageToComponentMap[page]
-  return (
-    <View style={styles.container}>
-      <StatusBar
-        barStyle="default"
-      />
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          {pageToTitleMap[page]}
-        </Text>
-      </View>
-      <Scene />
-      <TabBar />
-    </View>
-  )
+  
+  render() {
+    const { isLoggedIn } = this.props
+    if (!isLoggedIn) {
+      return <Login />
+    }
+    return (
+      <ThemeProvider uiTheme={uiTheme}>
+        <View style={styles.container}>
+          <StatusBar
+            barStyle="default"
+          />
+          <Screen />
+        </View>
+      </ThemeProvider>
+    )
+  }
 }
-
-// App.propTypes = {
-//   page: PropTypes.string
-// }
 
 export default connect(
-  state => state.navigation,
+  state => state.login,
   actions
 )(App)

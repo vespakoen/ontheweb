@@ -90,6 +90,10 @@ dwalerwww:
 # HUMMINGGURU
 hummingwww:
   image: vespakoen/hummingguru
+  environment:
+    DEBUG: "utils"
+  volumes:
+    - /data/hummingguru:/data
   restart: always
 
 # VECTOR TILES

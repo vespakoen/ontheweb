@@ -1,7 +1,7 @@
 const debug = require('debug')
 const concat = require('concat-stream')
 
-const log = debug('utils')
+const log = debug('api:utils')
 
 function parseJsonRequest(req) {
   return new Promise((resolve) => {
@@ -12,13 +12,13 @@ function parseJsonRequest(req) {
     })))
   })
   .catch(err => {
-    log('Error while parsing JSON: %s', err.message)
+    log('error while parsing JSON: %s', err.message)
     throw new Error('Unable to parse JSON')
   })
 }
 
 function endJson(res, json, status = 200) {
-  log('sending response', status, json)
+  log('sending response', status, JSON.stringify(json, undefined, 2))
   res.setHeader('content-type', 'application/json')
   res.writeHead(status)
   res.end(JSON.stringify(json))

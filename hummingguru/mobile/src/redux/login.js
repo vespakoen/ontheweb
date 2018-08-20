@@ -2,6 +2,7 @@ import FBSDK, {
   LoginManager,
   AccessToken
 } from 'react-native-fbsdk'
+import uniqueId from 'react-native-unique-id'
 import * as fb from '../fb'
 import * as api from '../api'
 
@@ -24,15 +25,43 @@ export function getUserByFacebookId(profile) {
           type: 'FETCH_USER_SUCCESS',
           payload: user
         })
-        dispatch({
-          type: 'NAVIGATE_TO',
-          payload: 'helpOthers'
-        })
       })
       .catch(err => dispatch({
         type: 'FETCH_USER_ERROR',
         payload: err.message
       }))
+  }
+}
+
+export function getUserByDeviceId() {
+  return (dispatch) => {
+    dispatch({
+      type: 'FETCH_USER'
+    })
+    uniqueId()
+      .then(deviceId => {
+        return api.getUserByDeviceId(deviceId)
+          // when not found, create a new user
+          .catch(() => api.createGuestUser({
+            deviceId
+          }))
+          .then(user => {
+            dispatch({
+              type: 'FETCH_USER_SUCCESS',
+              payload: user
+            })
+            dispatch({
+              type: 'LOGIN_SUCCESS'
+            })
+          })
+          .catch(err => {
+            console.error(err)
+            dispatch({
+              type: 'FETCH_USER_ERROR',
+              payload: err.message
+            })
+          })
+      })
   }
 }
 
@@ -57,7 +86,7 @@ export function fetchProfile() {
   }
 }
 
-export function login() {
+export function facebookLogin() {
   return (dispatch) => {
     dispatch({
       type: 'LOGIN'
@@ -87,8 +116,18 @@ export function login() {
   }
 }
 
+export function guestLogin() {
+  return (dispatch) => {
+    dispatch({
+      type: 'LOGIN'
+    })
+    dispatch(getUserByDeviceId())
+  }
+}
+
 export const actions = {
-  login
+  facebookLogin,
+  guestLogin
 }
 
 const reducers = {

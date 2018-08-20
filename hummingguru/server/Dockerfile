@@ -1,17 +1,10 @@
-FROM mhart/alpine-node:6.9
+FROM rickydunlop/nodejs-ffmpeg
 
-VOLUME /tmp
-VOLUME /data/hummingguru
-
-WORKDIR /tmp
+VOLUME /data/media
+VOLUME /data/db
 
 RUN apk update \
-  && apk --no-cache add curl git \
-  && curl -O -L https://www.johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz \
-  && tar xJf /tmp/ffmpeg-release-64bit-static.tar.xz -C /tmp \
-  && ls /tmp \
-  && mv /tmp/ffmpeg-3.1.5-64bit-static/ffmpeg /usr/local/bin/ \
-  && rm -rf /tmp/ffmpeg*
+  && apk --no-cache add python build-base sqlite
 
 WORKDIR /src
 

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "forever --minUptime 1 --spinSleepTime 3000 index.js"
+    "start": "forever --minUptime 1 --spinSleepTime 3000 index.js",
+    "dev": "DEBUG=\"api:*\" nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,10 +17,12 @@
     "express": "^4.14.0",
     "ffmpeg-stream": "^0.3.0",
     "forever": "^0.15.2",
-    "forever-monitor": "git+https://github.com/foreverjs/forever-monitor.git",
-    "level": "^1.5.0",
+    "level": "^4.0.0",
     "level-sublevel": "^6.6.1",
-    "uuid": "^2.0.3"
+    "sequelize": "^4.37.10",
+    "sqlite3": "^4.0.0",
+    "uuid": "^2.0.3",
+    "uws": "^10.148.1"
   },
   "devDependencies": {
     "eslint": "^3.8.1",

@@ -1,9 +1,7 @@
 import { AudioRecorder } from 'react-native-audio'
-// import FileUploader from 'react-native-file-uploader'
 import Upload from 'react-native-background-upload'
 import fs from 'react-native-fs'
 import * as api from '../api'
-import { navigateTo } from './navigation'
 import config from '../../config'
 
 const initialState = {
@@ -33,15 +31,6 @@ export function listenToProgress() {
 export function listenToFinish() {
   return (dispatch) => {
     AudioRecorder.onFinished = () => {
-      // const settings = {
-      //   uri: tmpFile,
-      //   uploadUrl: `${config.API_URL}/upload`,
-      //   method: 'POST',
-      //   fileName: 'humm.aac',
-      //   fieldName: 'file',
-      //   contentType: 'application/octet-stream',
-      //   data: {}
-      // }
       dispatch({
         type: 'UPLOAD'
       })
@@ -52,12 +41,12 @@ export function listenToFinish() {
         type: 'multipart',
         field: 'file',
         headers: {
-          'content-type': 'application/octet-stream', // Customize content-type
+          'content-type': 'application/octet-stream'
         },
         // Below are options only supported on Android
-        notification: {
-          enabled: true
-        }
+        // notification: {
+        //   enabled: true
+        // }
       }).then((uploadId) => {
         console.log('Upload started')
         Upload.addListener('progress', uploadId, (data) => {
@@ -78,9 +67,6 @@ export function listenToFinish() {
           console.log(`Cancelled!`)
         })
         Upload.addListener('completed', uploadId, (data) => {
-          // data includes responseCode: number and responseBody: Object
-          console.log('Completed!')
-          console.log('DATA', data)
           fs.unlink(tmpFile)
             .catch(unlinkErr => console.error(`unlink error: ${unlinkErr.message}`))
             .then(() => dispatch({
@@ -91,26 +77,6 @@ export function listenToFinish() {
       }).catch((err) => {
         console.log('Upload error!', err)
       })
-      // FileUploader.upload(settings, (err, res) => {
-      //   if (err) {
-      //     dispatch({
-      //       type: 'UPLOAD_ERROR',
-      //       payload: err
-      //     })
-      //     return
-      //   }
-      //   fs.unlink(tmpFile)
-      //     .catch(unlinkErr => console.error(`unlink error: ${unlinkErr.message}`))
-      //     .then(() => dispatch({
-      //       type: 'UPLOAD_SUCCESS',
-      //       payload: res.data
-      //     }))
-      // }, (sent, expectedToSend) => {
-      //   dispatch({
-      //     type: 'UPLOAD_PROGRESS',
-      //     payload: sent / expectedToSend
-      //   })
-      // })
     }
   }
 }
@@ -205,7 +171,6 @@ export function createHumm() {
         dispatch({
           type: 'CREATE_HUMM_SUCCESS'
         })
-        dispatch(navigateTo('requests'))
       })
       .catch(err => {
         dispatch({

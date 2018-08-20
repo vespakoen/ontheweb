@@ -8,57 +8,13 @@ import {
   TextInput,
   ScrollView
 } from 'react-native'
-
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Waveform from './Waveform'
-import RoundButton from './RoundButton'
+import Waveform from '../components/Waveform'
+import RoundButton from '../components/RoundButton'
 import { actions } from '../redux/recorder'
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  scroll: {
-    flex: 1
-  },
-  controls: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  counter: {
-    fontSize: 30,
-    color: '#fff'
-  },
-  submit: {
-    fontSize: 20,
-    color: '#fff'
-  },
-  intro: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingLeft: 30,
-    paddingRight: 30
-  },
-  introText: {
-    fontSize: 24,
-    lineHeight: 36,
-    color: '#888',
-    textAlign: 'center'
-  },
-  note: {
-    backgroundColor: '#fff',
-    fontSize: 20,
-    height: 80,
-    marginLeft: 20,
-    marginRight: 20,
-    padding: 15,
-    color: '#000'
-  }
-})
+import Page from '../components/Page'
+import { recorderStyle as styles } from '../style'
 
 class Recorder extends Component {
   constructor(props) {
@@ -113,7 +69,7 @@ class Recorder extends Component {
     )
   }
 
-  renderRecordStep() {
+  renderRecordScreen() {
     const progressSeconds = Math.round(this.props.progress)
     const recordButtonContent = this.props.isRecording ? (
       <Text style={styles.counter}>
@@ -123,7 +79,7 @@ class Recorder extends Component {
       <Icon
         name="mic"
         size={50}
-        color="#000"
+        color="#ffe000"
       />
     )
     return (
@@ -143,7 +99,9 @@ class Recorder extends Component {
         ) }
         <View style={styles.controls}>
           <RoundButton
-            buttonStyle={{ backgroundColor: this.props.isRecording ? '#F44336' : '#fff' }}
+            style={this.props.isRecording ? {
+              backgroundColor: '#F44336'
+            } : {}}
             onPress={this.toggleRecord}
           >
             {recordButtonContent}
@@ -153,7 +111,7 @@ class Recorder extends Component {
     )
   }
 
-  renderUploadStep() {
+  renderUploadScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.intro}>
@@ -165,10 +123,18 @@ class Recorder extends Component {
     )
   }
 
-  renderPreviewStep() {
+  renderPreviewScreen() {
     return (
       <View style={styles.container}>
-        <Waveform recordingId={this.props.recordingId} height={180} />
+        <View style={styles.humm}>
+          <Waveform
+            recordingId={this.props.recordingId}
+            height={150}
+            backgroundColor="#2b2e37"
+            waveColor="#9499a1"
+            progressColor="#fff"
+          />
+        </View>
         <View style={styles.intro}>
           <Text style={styles.introText}>
             Tap the waves above, does it sound good?
@@ -181,7 +147,7 @@ class Recorder extends Component {
             <Icon
               name="check"
               size={50}
-              color="green"
+              color="#ffe000"
             />
           </RoundButton>
           <RoundButton
@@ -190,7 +156,7 @@ class Recorder extends Component {
             <Icon
               name="close"
               size={50}
-              color="#F44336"
+              color="#9499a1"
             />
           </RoundButton>
         </View>
@@ -198,7 +164,7 @@ class Recorder extends Component {
     )
   }
 
-  renderAddNoteStep() {
+  renderAddNoteScreen() {
     return (
       <ScrollView
         ref="SCROLLVIEW"
@@ -221,7 +187,6 @@ class Recorder extends Component {
         />
         <View style={styles.controls}>
           <RoundButton
-            buttonStyle={{ backgroundColor: '#4CAF50' }}
             onPress={this.props.createHumm}
           >
             <Text style={styles.submit}>
@@ -234,17 +199,25 @@ class Recorder extends Component {
   }
 
   render() {
-    const { recordingId, isUploading, isRecordingAccepted } = this.props
+    const { recordingId, isUploading, isRecordingAccepted, navigation } = this.props
+    let Screen
     if (isRecordingAccepted) {
-      return this.renderAddNoteStep()
+      Screen = this.renderAddNoteScreen()
+    } else if (isUploading) {
+      Screen = this.renderUploadScreen()
+    } else if (recordingId) {
+      Screen = this.renderPreviewScreen()
+    } else {
+      Screen = this.renderRecordScreen()
     }
-    if (isUploading) {
-      return this.renderUploadStep()
-    }
-    if (recordingId) {
-      return this.renderPreviewStep()
-    }
-    return this.renderRecordStep()
+    return (
+      <Page
+        navigation={navigation}
+        title="Get Help"
+      >
+        { Screen }
+      </Page>
+    )
   }
 }
 

@@ -1,10 +1,33 @@
 import React from 'react'
 
-import { WebView } from 'react-native'
-
+import {
+  WebView,
+  View
+} from 'react-native'
+// import WaveForm from 'react-native-audiowaveform'
+ 
 import config from '../../config'
 
-const html = (url, height) => `
+// const Waveform = ({
+//   recordingId,
+//   height
+// }) => <WaveForm
+//   style={{
+//     height,
+//     width: 200
+//   }}
+//   onPress={() => {
+
+//   }}
+//   source={{ uri: `${config.API_URL}/humm/${recordingId}.mp3` }}  
+//   waveFormStyle={{
+//     waveColor:'red',
+//     scrubColor:'white'
+//   }}
+//   >
+// </WaveForm>
+
+const html = (url, height, backgroundColor, waveColor, progressColor) => `
 <style type="text/css">
 * {
   -webkit-user-select: none;
@@ -15,7 +38,7 @@ const html = (url, height) => `
 html, body {
   margin: 0;
   padding: 0;
-  background: #ddd;
+  background: ${backgroundColor};
 }
 .waveform-wrap {
   position: relative;
@@ -48,37 +71,59 @@ html, body {
     <div class="waveform"></div>
   </div>
   <script>
-    var wave = WaveSurfer.create({
-      container: '#waveform',
-      waveColor: 'white',
-      progressColor: 'black',
-      height: ${height},
-      normalize: true,
-      cursorWidth: 0
-    });
-    wave.load('${url}');
-    const playEl = document.querySelector('#waveform .waveform-play')
-    playEl.addEventListener('click', function () {
-      wave.playPause()
-    })
+    try {
+      var wave = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: '${waveColor}',
+        progressColor: '${progressColor}',
+        height: ${height},
+        normalize: true,
+        cursorWidth: 0
+      });
+      wave.load('${url}');
+      const playEl = document.querySelector('#waveform .waveform-play')
+      playEl.addEventListener('click', function () {
+        wave.playPause()
+      })
+    } catch (err) {
+    }
   </script>
 </body>
 `
 
-const Waveform = ({ recordingId, height = 200 }) => (
-  <WebView
-    bounces={false}
-    scrollEnabled={false}
-    domStorageEnabled
-    source={{ html: html(`${config.API_URL}/humm/${recordingId}.wav`, height) }}
-    style={{ height }}
-    onError={(err) => console.error(err)}
-  />
-)
+class Waveform extends React.Component {
+  state = {
+    isLoading: true
+  }
 
-// Waveform.propTypes = {
-//   height: PropTypes.number,
-//   recordingId: PropTypes.string
-// }
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ isLoading: false })
+    }, 500)
+  }
+
+  render() {
+    const {
+      recordingId,
+      height = 200,
+      backgroundColor = '#ddd',
+      waveColor = '#fff',
+      progressColor = '#000'
+    } = this.props
+    return (
+      <WebView
+        bounces={false}
+        scrollEnabled={false}
+        domStorageEnabled
+        source={{ html: html(`${config.API_URL}/humm/${recordingId}.mp3`, height, backgroundColor, waveColor, progressColor) }}
+        style={this.state.isLoading
+          ? { height, opacity: 0 }
+          : { height, backgroundColor }
+        }
+        onError={(err) => console.error(err)}
+      />
+    )
+  }
+}
 
 export default Waveform

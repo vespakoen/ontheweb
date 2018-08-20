@@ -5,6 +5,16 @@ import {
   StyleSheet
 } from 'react-native'
 
+const shadow = {
+  shadowColor: '#000',
+  shadowOffset: {
+    width: 0,
+    height: 4
+  },
+  shadowOpacity: 0.1,
+  shadowRadius: 5
+}
+
 const styles = StyleSheet.create({
   roundButton: {
     alignItems: 'center',
@@ -12,13 +22,14 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#fff'
+    backgroundColor: '#2b2e37',
+    ...shadow
   }
 })
 
-const RoundButton = ({ onPress, buttonStyle, children }) => (
+const RoundButton = ({ onPress, style, children }) => (
   <TouchableOpacity onPress={onPress} >
-    <View style={[styles.roundButton, buttonStyle || {}]} >
+    <View style={[styles.roundButton, style || {}]} >
       { children }
     </View>
   </TouchableOpacity>
